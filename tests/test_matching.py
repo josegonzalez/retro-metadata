@@ -5,8 +5,8 @@ import pytest
 from retro_metadata.core.matching import (
     find_best_match,
     jaro_winkler_similarity,
-    split_search_term,
 )
+from retro_metadata.core.normalization import split_search_term
 
 
 class TestJaroWinklerSimilarity:

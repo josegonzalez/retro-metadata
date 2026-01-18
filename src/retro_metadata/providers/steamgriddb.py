@@ -5,9 +5,63 @@ from __future__ import annotations
 import json
 import logging
 import re
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Final
 
 import httpx
+
+
+class SGDBDimension(StrEnum):
+    """SteamGridDB grid dimension options."""
+
+    # Vertical grids
+    STEAM_VERTICAL = "600x900"
+    GOG_GALAXY = "342x482"
+    SQUARE = "512x512"
+    SQUARE_ICON = "256x256"
+
+    # Horizontal grids
+    STEAM_HORIZONTAL = "460x215"
+    LEGACY = "920x430"
+    OLD = "460x215"
+
+    # Heroes
+    HERO_BLURRED = "1920x620"
+    HERO_MATERIAL = "3840x1240"
+
+    # Logos
+    LOGO_CUSTOM = "custom"
+
+
+class SGDBStyle(StrEnum):
+    """SteamGridDB artwork style options."""
+
+    # Grid styles
+    ALTERNATE = "alternate"
+    BLURRED = "blurred"
+    WHITE_LOGO = "white_logo"
+    MATERIAL = "material"
+    NO_LOGO = "no_logo"
+
+    # Hero styles
+    HERO_ALTERNATE = "alternate"
+    HERO_BLURRED = "blurred"
+    HERO_MATERIAL = "material"
+
+    # Logo styles
+    LOGO_OFFICIAL = "official"
+    LOGO_WHITE = "white"
+    LOGO_BLACK = "black"
+    LOGO_CUSTOM = "custom"
+
+
+class SGDBMime(StrEnum):
+    """SteamGridDB MIME type options."""
+
+    PNG = "image/png"
+    JPEG = "image/jpeg"
+    WEBP = "image/webp"
+    ICO = "image/vnd.microsoft.icon"
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +115,12 @@ class SteamGridDBProvider(MetadataProvider):
         self._base_url = "https://www.steamgriddb.com/api/v2"
         self._user_agent = user_agent
         self._client: httpx.AsyncClient | None = None
-        self._min_similarity_score = 0.6
+        # High similarity threshold for better matches (RomM uses 0.98)
+        self._min_similarity_score = 0.98
+        # Content filter defaults (can be configured)
+        self._nsfw = config.settings.get("nsfw", False)
+        self._humor = config.settings.get("humor", True)
+        self._epilepsy = config.settings.get("epilepsy", True)
 
     @property
     def api_key(self) -> str:
@@ -199,41 +258,121 @@ class SteamGridDBProvider(MetadataProvider):
         """Fetch all artwork types for a game."""
         artwork = Artwork()
 
-        # Fetch grids (covers)
+        # Fetch grids (covers) with content filters
         try:
-            grids = await self._request(f"/grids/game/{game_id}")
-            if grids.get("success") and grids.get("data"):
-                artwork.cover_url = grids["data"][0].get("url", "")
+            grids = await self._fetch_grids(game_id)
+            if grids:
+                artwork.cover_url = grids[0].get("url", "")
         except Exception:
             pass
 
         # Fetch heroes (banners/backgrounds)
         try:
-            heroes = await self._request(f"/heroes/game/{game_id}")
-            if heroes.get("success") and heroes.get("data"):
-                artwork.background_url = heroes["data"][0].get("url", "")
-                if len(heroes["data"]) > 1:
-                    artwork.banner_url = heroes["data"][1].get("url", "")
+            heroes = await self._fetch_heroes(game_id)
+            if heroes:
+                artwork.background_url = heroes[0].get("url", "")
+                if len(heroes) > 1:
+                    artwork.banner_url = heroes[1].get("url", "")
         except Exception:
             pass
 
         # Fetch logos
         try:
-            logos = await self._request(f"/logos/game/{game_id}")
-            if logos.get("success") and logos.get("data"):
-                artwork.logo_url = logos["data"][0].get("url", "")
+            logos = await self._fetch_logos(game_id)
+            if logos:
+                artwork.logo_url = logos[0].get("url", "")
         except Exception:
             pass
 
         # Fetch icons
         try:
-            icons = await self._request(f"/icons/game/{game_id}")
-            if icons.get("success") and icons.get("data"):
-                artwork.icon_url = icons["data"][0].get("url", "")
+            icons = await self._fetch_icons(game_id)
+            if icons:
+                artwork.icon_url = icons[0].get("url", "")
         except Exception:
             pass
 
         return artwork
+
+    def _build_filter_params(
+        self,
+        dimensions: list[SGDBDimension] | None = None,
+        styles: list[SGDBStyle] | None = None,
+        mimes: list[SGDBMime] | None = None,
+        types: list[str] | None = None,
+    ) -> dict[str, str]:
+        """Build filter parameters for artwork requests."""
+        params: dict[str, str] = {}
+
+        # Content filters
+        nsfw = "any" if self._nsfw else "false"
+        humor = "any" if self._humor else "false"
+        epilepsy = "any" if self._epilepsy else "false"
+
+        params["nsfw"] = nsfw
+        params["humor"] = humor
+        params["epilepsy"] = epilepsy
+
+        if dimensions:
+            params["dimensions"] = ",".join(dimensions)
+        if styles:
+            params["styles"] = ",".join(styles)
+        if mimes:
+            params["mimes"] = ",".join(mimes)
+        if types:
+            params["types"] = ",".join(types)
+
+        return params
+
+    async def _fetch_grids(
+        self,
+        game_id: int,
+        dimensions: list[SGDBDimension] | None = None,
+        styles: list[SGDBStyle] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Fetch grid artwork with optional filters."""
+        params = self._build_filter_params(dimensions=dimensions, styles=styles)
+        result = await self._request(f"/grids/game/{game_id}", params or None)
+        if result.get("success") and result.get("data"):
+            return result["data"]
+        return []
+
+    async def _fetch_heroes(
+        self,
+        game_id: int,
+        dimensions: list[SGDBDimension] | None = None,
+        styles: list[SGDBStyle] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Fetch hero artwork with optional filters."""
+        params = self._build_filter_params(dimensions=dimensions, styles=styles)
+        result = await self._request(f"/heroes/game/{game_id}", params or None)
+        if result.get("success") and result.get("data"):
+            return result["data"]
+        return []
+
+    async def _fetch_logos(
+        self,
+        game_id: int,
+        styles: list[SGDBStyle] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Fetch logo artwork with optional filters."""
+        params = self._build_filter_params(styles=styles)
+        result = await self._request(f"/logos/game/{game_id}", params or None)
+        if result.get("success") and result.get("data"):
+            return result["data"]
+        return []
+
+    async def _fetch_icons(
+        self,
+        game_id: int,
+        dimensions: list[SGDBDimension] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Fetch icon artwork with optional filters."""
+        params = self._build_filter_params(dimensions=dimensions)
+        result = await self._request(f"/icons/game/{game_id}", params or None)
+        if result.get("success") and result.get("data"):
+            return result["data"]
+        return []
 
     async def identify(
         self,

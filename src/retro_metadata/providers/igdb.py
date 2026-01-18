@@ -18,6 +18,8 @@ from retro_metadata.core.exceptions import (
     ProviderConnectionError,
     ProviderRateLimitError,
 )
+from retro_metadata.platforms.mappings import get_igdb_platform_id
+from retro_metadata.platforms.slugs import UniversalPlatformSlug as UPS
 from retro_metadata.providers.base import MetadataProvider
 from retro_metadata.types.common import (
     AgeRating,
@@ -29,6 +31,9 @@ from retro_metadata.types.common import (
     RelatedGame,
     SearchResult,
 )
+
+# Forward declaration for age rating functions used below
+# The actual mappings are defined at module level after the class
 from retro_metadata.types.igdb import Game, GameType
 
 if TYPE_CHECKING:
@@ -533,6 +538,17 @@ class IGDBProvider(MetadataProvider):
             if isinstance(first_video, dict):
                 youtube_video_id = first_video.get("video_id")
 
+        # Extract age ratings
+        age_ratings = []
+        if "age_ratings" in game:
+            for ar in game["age_ratings"]:
+                if isinstance(ar, dict):
+                    category_id = ar.get("category") or ar.get("rating_category", 0)
+                    rating_id = ar.get("rating", 0)
+                    category_name = IGDB_AGE_RATING_CATEGORIES.get(category_id, "Unknown")
+                    rating_name = IGDB_AGE_RATINGS.get(rating_id, str(rating_id))
+                    age_ratings.append(AgeRating(rating=rating_name, category=category_name))
+
         return GameMetadata(
             total_rating=game.get("total_rating"),
             aggregated_rating=game.get("aggregated_rating"),
@@ -545,6 +561,7 @@ class IGDBProvider(MetadataProvider):
             companies=companies,
             game_modes=game_modes,
             platforms=platforms,
+            age_ratings=age_ratings,
             expansions=extract_related("expansions", "expansion"),
             dlcs=extract_related("dlcs", "dlc"),
             remasters=extract_related("remasters", "remaster"),
@@ -555,7 +572,263 @@ class IGDBProvider(MetadataProvider):
             raw_data=game,
         )
 
+    def get_platform(self, slug: str) -> Platform | None:
+        """Get platform information for a slug.
+
+        Args:
+            slug: Universal platform slug
+
+        Returns:
+            Platform with IGDB ID, or None if not supported
+        """
+        try:
+            ups = UPS(slug)
+        except ValueError:
+            return None
+
+        platform_id = get_igdb_platform_id(ups)
+        if platform_id is None:
+            return None
+
+        # Get platform name from the mapping
+        name = IGDB_PLATFORM_NAMES.get(platform_id, slug.replace("-", " ").title())
+
+        return Platform(
+            slug=slug,
+            name=name,
+            provider_ids={"igdb": platform_id},
+        )
+
     async def close(self) -> None:
         """Close the aiohttp session."""
         if self._session is not None and not self._session.closed:
             await self._session.close()
+
+
+# IGDB age rating mappings
+# Rating category IDs from IGDB API
+IGDB_AGE_RATING_CATEGORIES: dict[int, str] = {
+    1: "ESRB",
+    2: "PEGI",
+    3: "CERO",
+    4: "USK",
+    5: "GRAC",
+    6: "CLASS_IND",
+    7: "ACB",
+}
+
+# Rating value IDs from IGDB API
+IGDB_AGE_RATINGS: dict[int, str] = {
+    # ESRB
+    1: "Three",
+    2: "Seven",
+    3: "Twelve",
+    4: "Sixteen",
+    5: "Eighteen",
+    6: "RP (Rating Pending)",
+    7: "EC (Early Childhood)",
+    8: "E (Everyone)",
+    9: "E10+ (Everyone 10+)",
+    10: "T (Teen)",
+    11: "M (Mature 17+)",
+    12: "AO (Adults Only 18+)",
+    # PEGI
+    13: "PEGI 3",
+    14: "PEGI 7",
+    15: "PEGI 12",
+    16: "PEGI 16",
+    17: "PEGI 18",
+    # CERO
+    18: "CERO A",
+    19: "CERO B",
+    20: "CERO C",
+    21: "CERO D",
+    22: "CERO Z",
+    # USK
+    23: "USK 0",
+    24: "USK 6",
+    25: "USK 12",
+    26: "USK 16",
+    27: "USK 18",
+    # GRAC
+    28: "GRAC All",
+    29: "GRAC 12",
+    30: "GRAC 15",
+    31: "GRAC 18",
+    32: "GRAC Testing",
+    # CLASS_IND
+    33: "CLASS_IND L",
+    34: "CLASS_IND 10",
+    35: "CLASS_IND 12",
+    36: "CLASS_IND 14",
+    37: "CLASS_IND 16",
+    38: "CLASS_IND 18",
+    # ACB
+    39: "ACB G",
+    40: "ACB PG",
+    41: "ACB M",
+    42: "ACB MA15+",
+    43: "ACB R18+",
+    44: "ACB RC",
+}
+
+# Preferred locale mappings for region-based localization
+IGDB_LOCALE_MAP: dict[str, int] = {
+    "en-US": 1,  # English (United States)
+    "en-GB": 2,  # English (United Kingdom)
+    "ja-JP": 3,  # Japanese
+    "de-DE": 4,  # German
+    "fr-FR": 5,  # French
+    "es-ES": 6,  # Spanish (Spain)
+    "it-IT": 7,  # Italian
+    "pt-BR": 8,  # Portuguese (Brazil)
+    "ko-KR": 9,  # Korean
+    "zh-CN": 10, # Chinese (Simplified)
+    "zh-TW": 11, # Chinese (Traditional)
+    "ru-RU": 12, # Russian
+    "pl-PL": 13, # Polish
+    "nl-NL": 14, # Dutch
+    "sv-SE": 15, # Swedish
+    "da-DK": 16, # Danish
+    "fi-FI": 17, # Finnish
+    "no-NO": 18, # Norwegian
+}
+
+
+def get_igdb_preferred_locale(region: str | None = None) -> int | None:
+    """Get the IGDB locale ID for a given region code.
+
+    Args:
+        region: Region/locale code (e.g., "en-US", "ja-JP")
+
+    Returns:
+        IGDB locale ID or None if not found
+    """
+    if not region:
+        return None
+    return IGDB_LOCALE_MAP.get(region)
+
+
+def get_age_rating_string(category: int, rating: int) -> str:
+    """Get human-readable age rating string.
+
+    Args:
+        category: IGDB age rating category ID
+        rating: IGDB age rating value ID
+
+    Returns:
+        Human-readable string like "ESRB: M (Mature 17+)"
+    """
+    category_name = IGDB_AGE_RATING_CATEGORIES.get(category, "Unknown")
+    rating_name = IGDB_AGE_RATINGS.get(rating, "Unknown")
+    return f"{category_name}: {rating_name}"
+
+
+# IGDB platform ID to name mapping
+IGDB_PLATFORM_NAMES: dict[int, str] = {
+    3: "Linux",
+    4: "Nintendo 64",
+    5: "Wii",
+    6: "PC (Microsoft Windows)",
+    7: "PlayStation",
+    8: "PlayStation 2",
+    9: "PlayStation 3",
+    11: "Xbox",
+    12: "Xbox 360",
+    13: "DOS",
+    14: "Mac",
+    15: "Commodore C64/128/MAX",
+    16: "Amiga",
+    18: "NES",
+    19: "Super Nintendo Entertainment System",
+    20: "Nintendo DS",
+    21: "Nintendo GameCube",
+    22: "Game Boy Color",
+    23: "Dreamcast",
+    24: "Game Boy Advance",
+    25: "Amstrad CPC",
+    26: "ZX Spectrum",
+    27: "MSX",
+    29: "Sega Mega Drive/Genesis",
+    30: "Sega 32X",
+    32: "Sega Saturn",
+    33: "Game Boy",
+    34: "Android",
+    35: "Sega Game Gear",
+    37: "Nintendo 3DS",
+    38: "PlayStation Portable",
+    39: "iOS",
+    41: "Wii U",
+    42: "N-Gage",
+    46: "PlayStation Vita",
+    48: "PlayStation 4",
+    49: "Xbox One",
+    50: "3DO Interactive Multiplayer",
+    51: "Family Computer Disk System",
+    52: "Arcade",
+    53: "MSX2",
+    57: "WonderSwan",
+    58: "Super Famicom",
+    59: "Atari 2600",
+    60: "Atari 7800",
+    61: "Atari Lynx",
+    62: "Atari Jaguar",
+    63: "Atari ST/STE",
+    64: "Sega Master System/Mark III",
+    65: "Atari 8-bit",
+    66: "Atari 5200",
+    67: "Intellivision",
+    68: "ColecoVision",
+    69: "BBC Micro",
+    70: "Vectrex",
+    71: "Commodore VIC-20",
+    72: "Ouya",
+    75: "Apple II",
+    76: "PocketStation",
+    77: "Sharp X1",
+    78: "Sega CD",
+    79: "Neo Geo MVS",
+    80: "Neo Geo AES",
+    84: "SG-1000",
+    86: "TurboGrafx-16/PC Engine",
+    87: "Virtual Boy",
+    93: "Commodore 16",
+    94: "Commodore Plus/4",
+    99: "Family Computer (Famicom)",
+    111: "Atari XEGS",
+    112: "Sharp X68000",
+    114: "Amiga CD",
+    115: "Apple IIGS",
+    116: "Commodore CDTV",
+    117: "Amiga CD32",
+    119: "Neo Geo Pocket",
+    120: "Neo Geo Pocket Color",
+    121: "Gizmondo",
+    122: "Game.com",
+    123: "WonderSwan Color",
+    125: "PC-8801",
+    127: "Fairchild Channel F",
+    128: "PC Engine SuperGrafx",
+    130: "Nintendo Switch",
+    132: "Amazon Fire TV",
+    133: "Magnavox Odyssey 2",
+    136: "Neo Geo CD",
+    137: "New Nintendo 3DS",
+    149: "PC-9801",
+    150: "Turbografx-16/PC Engine CD",
+    158: "Amstrad GX4000",
+    161: "MSX2+",
+    165: "PlayStation VR",
+    167: "PlayStation 5",
+    169: "Xbox Series X|S",
+    170: "Google Stadia",
+    171: "Atari Jaguar CD",
+    207: "Pokemon mini",
+    274: "PC-FX",
+    308: "Playdate",
+    339: "Sega Pico",
+    340: "Gamate",
+    343: "Watara Supervision",
+    390: "PlayStation VR2",
+    416: "Nintendo 64DD",
+}

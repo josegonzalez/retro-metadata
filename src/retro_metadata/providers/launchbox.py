@@ -425,18 +425,38 @@ class LaunchBoxProvider(MetadataProvider):
         except (ValueError, TypeError):
             pass
 
+        # Wikipedia URL
+        wikipedia_url = game.get("WikipediaURL", "")
+
+        # Cooperative mode
+        cooperative = game.get("Cooperative", "").lower() == "true"
+
+        # Game modes (derive from MaxPlayers and Cooperative)
+        game_modes = []
+        if max_players and int(max_players) == 1:
+            game_modes.append("Single player")
+        if max_players and int(max_players) > 1:
+            game_modes.append("Multiplayer")
+        if cooperative:
+            game_modes.append("Co-op")
+
         return GameMetadata(
             total_rating=total_rating,
             first_release_date=first_release_date,
             youtube_video_id=youtube_video_id if youtube_video_id else None,
             genres=genres,
+            game_modes=game_modes,
             companies=list(dict.fromkeys(companies)),
             age_ratings=age_ratings,
             player_count=player_count,
             developer=game.get("Developer", ""),
             publisher=game.get("Publisher", ""),
             release_year=release_year,
-            raw_data=game,
+            raw_data={
+                **game,
+                "wikipedia_url": wikipedia_url,
+                "cooperative": cooperative,
+            },
         )
 
     def get_platform(self, slug: str) -> Platform | None:

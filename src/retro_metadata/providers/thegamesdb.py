@@ -444,77 +444,199 @@ class TheGamesDBProvider(MetadataProvider):
 
 
 # Platform mapping from universal slugs to TheGamesDB platform IDs
+# Includes hardware specification info where available
 TGDB_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
-    UPS._3DO: {"id": 25, "name": "3DO"},
-    UPS.ACORN_ARCHIMEDES: {"id": 4944, "name": "Acorn Archimedes"},
-    UPS.ACORN_ELECTRON: {"id": 4954, "name": "Acorn Electron"},
-    UPS.ACTION_MAX: {"id": 4976, "name": "Action Max"},
-    UPS.AMIGA: {"id": 4911, "name": "Amiga"},
-    UPS.AMIGA_CD32: {"id": 4947, "name": "Amiga CD32"},
-    UPS.ACPC: {"id": 4914, "name": "Amstrad CPC"},
-    UPS.AMSTRAD_GX4000: {"id": 4999, "name": "Amstrad GX4000"},
-    UPS.ANDROID: {"id": 4916, "name": "Android"},
-    UPS.APPLEII: {"id": 4942, "name": "Apple II"},
-    UPS.ARCADE: {"id": 23, "name": "Arcade"},
-    UPS.ATARI2600: {"id": 22, "name": "Atari 2600"},
-    UPS.ATARI5200: {"id": 26, "name": "Atari 5200"},
-    UPS.ATARI7800: {"id": 27, "name": "Atari 7800"},
-    UPS.ATARI800: {"id": 4943, "name": "Atari 800"},
-    UPS.JAGUAR: {"id": 28, "name": "Atari Jaguar"},
-    UPS.ATARI_JAGUAR_CD: {"id": 29, "name": "Atari Jaguar CD"},
-    UPS.LYNX: {"id": 4924, "name": "Atari Lynx"},
-    UPS.ATARI_ST: {"id": 4937, "name": "Atari ST"},
-    UPS.ATARI_XEGS: {"id": 30, "name": "Atari XEGS"},
-    UPS.ASTROCADE: {"id": 4968, "name": "Bally Astrocade"},
-    UPS.BBCMICRO: {"id": 5013, "name": "BBC Micro"},
-    UPS.CASIO_LOOPY: {"id": 4991, "name": "Casio Loopy"},
-    UPS.CASIO_PV_1000: {"id": 4964, "name": "Casio PV-1000"},
-    UPS.COLECOVISION: {"id": 31, "name": "Colecovision"},
-    UPS.C64: {"id": 40, "name": "Commodore 64"},
-    UPS.DOS: {"id": 1, "name": "PC"},
-    UPS.DC: {"id": 16, "name": "Sega Dreamcast"},
-    UPS.FAIRCHILD_CHANNEL_F: {"id": 4928, "name": "Fairchild Channel F"},
-    UPS.FDS: {"id": 4936, "name": "Famicom Disk System"},
-    UPS.GB: {"id": 4, "name": "Nintendo Game Boy"},
-    UPS.GBA: {"id": 5, "name": "Nintendo Game Boy Advance"},
-    UPS.GBC: {"id": 41, "name": "Nintendo Game Boy Color"},
-    UPS.GAMEGEAR: {"id": 20, "name": "Sega Game Gear"},
-    UPS.GENESIS: {"id": 18, "name": "Sega Genesis"},
-    UPS.INTELLIVISION: {"id": 32, "name": "Intellivision"},
-    UPS.MSX: {"id": 4929, "name": "MSX"},
-    UPS.N64: {"id": 3, "name": "Nintendo 64"},
-    UPS.N3DS: {"id": 4912, "name": "Nintendo 3DS"},
-    UPS.NDS: {"id": 8, "name": "Nintendo DS"},
-    UPS.NES: {"id": 7, "name": "Nintendo Entertainment System (NES)"},
-    UPS.NGC: {"id": 2, "name": "Nintendo GameCube"},
-    UPS.NEO_GEO_CD: {"id": 4956, "name": "Neo Geo CD"},
-    UPS.NEO_GEO_POCKET: {"id": 4922, "name": "Neo Geo Pocket"},
-    UPS.NEO_GEO_POCKET_COLOR: {"id": 4923, "name": "Neo Geo Pocket Color"},
-    UPS.NEOGEOAES: {"id": 24, "name": "Neo Geo"},
-    UPS.ODYSSEY_2: {"id": 4927, "name": "Magnavox Odyssey 2"},
-    UPS.PC_FX: {"id": 4930, "name": "PC-FX"},
-    UPS.PSX: {"id": 10, "name": "Sony Playstation"},
-    UPS.PS2: {"id": 11, "name": "Sony Playstation 2"},
-    UPS.PS3: {"id": 12, "name": "Sony Playstation 3"},
-    UPS.PSP: {"id": 13, "name": "Sony PSP"},
-    UPS.PSVITA: {"id": 39, "name": "Sony Playstation Vita"},
-    UPS.SATURN: {"id": 17, "name": "Sega Saturn"},
-    UPS.SEGA32: {"id": 33, "name": "Sega 32X"},
-    UPS.SEGACD: {"id": 21, "name": "Sega CD"},
-    UPS.SG1000: {"id": 4949, "name": "Sega SG-1000"},
-    UPS.SMS: {"id": 35, "name": "Sega Master System"},
-    UPS.SNES: {"id": 6, "name": "Super Nintendo (SNES)"},
-    UPS.SUPERGRAFX: {"id": 4955, "name": "PC Engine SuperGrafx"},
-    UPS.SWITCH: {"id": 4971, "name": "Nintendo Switch"},
-    UPS.TG16: {"id": 34, "name": "TurboGrafx 16"},
-    UPS.TURBOGRAFX_CD: {"id": 4940, "name": "TurboGrafx CD"},
-    UPS.VECTREX: {"id": 4939, "name": "Vectrex"},
-    UPS.VIRTUALBOY: {"id": 4918, "name": "Nintendo Virtual Boy"},
-    UPS.WII: {"id": 9, "name": "Nintendo Wii"},
-    UPS.WIIU: {"id": 38, "name": "Nintendo Wii U"},
-    UPS.WONDERSWAN: {"id": 4925, "name": "WonderSwan"},
-    UPS.WONDERSWAN_COLOR: {"id": 4926, "name": "WonderSwan Color"},
-    UPS.XBOX: {"id": 14, "name": "Microsoft Xbox"},
-    UPS.XBOX360: {"id": 15, "name": "Microsoft Xbox 360"},
-    UPS.ZXS: {"id": 4913, "name": "Sinclair ZX Spectrum"},
+    # 3DO
+    UPS._3DO: {"id": 25, "name": "3DO Interactive Multiplayer", "manufacturer": "3DO Company"},
+    # Acorn
+    UPS.ACORN_ARCHIMEDES: {"id": 4944, "name": "Acorn Archimedes", "manufacturer": "Acorn"},
+    UPS.ACORN_ELECTRON: {"id": 4954, "name": "Acorn Electron", "manufacturer": "Acorn"},
+    UPS.ATOM: {"id": 4983, "name": "Acorn Atom", "manufacturer": "Acorn"},
+    # Amstrad
+    UPS.ACPC: {"id": 4914, "name": "Amstrad CPC", "manufacturer": "Amstrad"},
+    UPS.AMSTRAD_GX4000: {"id": 4999, "name": "Amstrad GX4000", "manufacturer": "Amstrad"},
+    UPS.AMSTRAD_PCW: {"id": 5018, "name": "Amstrad PCW", "manufacturer": "Amstrad"},
+    # Android / iOS / Mobile
+    UPS.ANDROID: {"id": 4916, "name": "Android", "manufacturer": "Google"},
+    UPS.IOS: {"id": 4915, "name": "iOS", "manufacturer": "Apple"},
+    UPS.NGAGE: {"id": 4938, "name": "N-Gage", "manufacturer": "Nokia"},
+    UPS.PALM_OS: {"id": 4977, "name": "Palm OS", "manufacturer": "Palm"},
+    UPS.SYMBIAN: {"id": 4978, "name": "Symbian", "manufacturer": "Nokia"},
+    UPS.WINDOWS_MOBILE: {"id": 4979, "name": "Windows Mobile", "manufacturer": "Microsoft"},
+    # Apple
+    UPS.APPLEII: {"id": 4942, "name": "Apple II", "manufacturer": "Apple"},
+    UPS.APPLE_IIGS: {"id": 5003, "name": "Apple IIGS", "manufacturer": "Apple"},
+    UPS.MAC: {"id": 37, "name": "Mac OS", "manufacturer": "Apple"},
+    # Arcade
+    UPS.ARCADE: {"id": 23, "name": "Arcade", "manufacturer": "Various"},
+    UPS.NEOGEOAES: {"id": 24, "name": "Neo Geo", "manufacturer": "SNK"},
+    UPS.NEOGEOMVS: {"id": 24, "name": "Neo Geo MVS", "manufacturer": "SNK"},
+    # Atari
+    UPS.ATARI2600: {"id": 22, "name": "Atari 2600", "manufacturer": "Atari"},
+    UPS.ATARI5200: {"id": 26, "name": "Atari 5200", "manufacturer": "Atari"},
+    UPS.ATARI7800: {"id": 27, "name": "Atari 7800", "manufacturer": "Atari"},
+    UPS.ATARI800: {"id": 4943, "name": "Atari 800", "manufacturer": "Atari"},
+    UPS.ATARI8BIT: {"id": 4943, "name": "Atari 8-bit", "manufacturer": "Atari"},
+    UPS.ATARI_ST: {"id": 4937, "name": "Atari ST", "manufacturer": "Atari"},
+    UPS.ATARI_XEGS: {"id": 30, "name": "Atari XEGS", "manufacturer": "Atari"},
+    UPS.JAGUAR: {"id": 28, "name": "Atari Jaguar", "manufacturer": "Atari"},
+    UPS.ATARI_JAGUAR_CD: {"id": 29, "name": "Atari Jaguar CD", "manufacturer": "Atari"},
+    UPS.LYNX: {"id": 4924, "name": "Atari Lynx", "manufacturer": "Atari"},
+    # Bally
+    UPS.ASTROCADE: {"id": 4968, "name": "Bally Astrocade", "manufacturer": "Bally"},
+    # Bandai
+    UPS.WONDERSWAN: {"id": 4925, "name": "WonderSwan", "manufacturer": "Bandai"},
+    UPS.WONDERSWAN_COLOR: {"id": 4926, "name": "WonderSwan Color", "manufacturer": "Bandai"},
+    UPS.PLAYDIA: {"id": 4965, "name": "Playdia", "manufacturer": "Bandai"},
+    # BBC
+    UPS.BBCMICRO: {"id": 5013, "name": "BBC Micro", "manufacturer": "Acorn/BBC"},
+    # Casio
+    UPS.CASIO_LOOPY: {"id": 4991, "name": "Casio Loopy", "manufacturer": "Casio"},
+    UPS.CASIO_PV_1000: {"id": 4964, "name": "Casio PV-1000", "manufacturer": "Casio"},
+    # ColecoVision / Coleco
+    UPS.COLECOVISION: {"id": 31, "name": "ColecoVision", "manufacturer": "Coleco"},
+    UPS.COLECOADAM: {"id": 4984, "name": "Coleco Adam", "manufacturer": "Coleco"},
+    # Commodore
+    UPS.AMIGA: {"id": 4911, "name": "Amiga", "manufacturer": "Commodore"},
+    UPS.AMIGA_CD32: {"id": 4947, "name": "Amiga CD32", "manufacturer": "Commodore"},
+    UPS.COMMODORE_CDTV: {"id": 4986, "name": "Commodore CDTV", "manufacturer": "Commodore"},
+    UPS.C64: {"id": 40, "name": "Commodore 64", "manufacturer": "Commodore"},
+    UPS.C128: {"id": 4948, "name": "Commodore 128", "manufacturer": "Commodore"},
+    UPS.VIC_20: {"id": 4945, "name": "Commodore VIC-20", "manufacturer": "Commodore"},
+    # DOS / PC / Linux
+    UPS.DOS: {"id": 1, "name": "PC", "manufacturer": "IBM Compatible"},
+    UPS.WIN: {"id": 1, "name": "PC", "manufacturer": "Microsoft"},
+    UPS.WIN3X: {"id": 1, "name": "PC", "manufacturer": "Microsoft"},
+    UPS.LINUX: {"id": 4919, "name": "Linux", "manufacturer": "Various"},
+    # Dragon
+    UPS.DRAGON_32_SLASH_64: {"id": 4974, "name": "Dragon 32/64", "manufacturer": "Dragon Data"},
+    # Emerson
+    UPS.ARCADIA_2001: {"id": 4963, "name": "Arcadia 2001", "manufacturer": "Emerson"},
+    # Epoch
+    UPS.EPOCH_CASSETTE_VISION: {"id": 4992, "name": "Epoch Cassette Vision", "manufacturer": "Epoch"},
+    UPS.EPOCH_SUPER_CASSETTE_VISION: {"id": 4993, "name": "Epoch Super Cassette Vision", "manufacturer": "Epoch"},
+    # Fairchild
+    UPS.FAIRCHILD_CHANNEL_F: {"id": 4928, "name": "Fairchild Channel F", "manufacturer": "Fairchild"},
+    # FM Towns
+    UPS.FM_TOWNS: {"id": 4932, "name": "FM Towns Marty", "manufacturer": "Fujitsu"},
+    # Game Park
+    UPS.GP32: {"id": 4970, "name": "GP32", "manufacturer": "Game Park"},
+    UPS.GP2X: {"id": 5001, "name": "GP2X", "manufacturer": "Game Park Holdings"},
+    # Gamate
+    UPS.GAMATE: {"id": 4996, "name": "Gamate", "manufacturer": "Bit Corporation"},
+    # GCE
+    UPS.VECTREX: {"id": 4939, "name": "Vectrex", "manufacturer": "GCE"},
+    # Intellivision
+    UPS.INTELLIVISION: {"id": 32, "name": "Intellivision", "manufacturer": "Mattel"},
+    # Interton
+    UPS.INTERTON_VC_4000: {"id": 4975, "name": "VC 4000", "manufacturer": "Interton"},
+    UPS.VC_4000: {"id": 4975, "name": "VC 4000", "manufacturer": "Interton"},
+    # Magnavox / Philips
+    UPS.ODYSSEY: {"id": 4962, "name": "Magnavox Odyssey", "manufacturer": "Magnavox"},
+    UPS.ODYSSEY_2: {"id": 4927, "name": "Magnavox Odyssey 2", "manufacturer": "Magnavox"},
+    UPS.PHILIPS_CD_I: {"id": 4917, "name": "Philips CD-i", "manufacturer": "Philips"},
+    UPS.VIDEOPAC_G7400: {"id": 4994, "name": "Videopac+ G7400", "manufacturer": "Philips"},
+    # Microsoft Xbox
+    UPS.XBOX: {"id": 14, "name": "Microsoft Xbox", "manufacturer": "Microsoft"},
+    UPS.XBOX360: {"id": 15, "name": "Microsoft Xbox 360", "manufacturer": "Microsoft"},
+    UPS.XBOXONE: {"id": 4920, "name": "Microsoft Xbox One", "manufacturer": "Microsoft"},
+    UPS.SERIES_X_S: {"id": 4998, "name": "Xbox Series X|S", "manufacturer": "Microsoft"},
+    # MSX
+    UPS.MSX: {"id": 4929, "name": "MSX", "manufacturer": "Various"},
+    UPS.MSX2: {"id": 4929, "name": "MSX2", "manufacturer": "Various"},
+    UPS.MSX2PLUS: {"id": 4929, "name": "MSX2+", "manufacturer": "Various"},
+    UPS.MSX_TURBO: {"id": 4929, "name": "MSX turboR", "manufacturer": "Various"},
+    # NEC
+    UPS.PC_8800_SERIES: {"id": 4933, "name": "NEC PC-8801", "manufacturer": "NEC"},
+    UPS.PC_9800_SERIES: {"id": 4934, "name": "NEC PC-9801", "manufacturer": "NEC"},
+    UPS.PC_FX: {"id": 4930, "name": "PC-FX", "manufacturer": "NEC"},
+    UPS.TG16: {"id": 34, "name": "TurboGrafx 16", "manufacturer": "NEC"},
+    UPS.TURBOGRAFX_CD: {"id": 4940, "name": "TurboGrafx CD", "manufacturer": "NEC"},
+    UPS.SUPERGRAFX: {"id": 4955, "name": "PC Engine SuperGrafx", "manufacturer": "NEC"},
+    # Neo Geo
+    UPS.NEO_GEO_CD: {"id": 4956, "name": "Neo Geo CD", "manufacturer": "SNK"},
+    UPS.NEO_GEO_POCKET: {"id": 4922, "name": "Neo Geo Pocket", "manufacturer": "SNK"},
+    UPS.NEO_GEO_POCKET_COLOR: {"id": 4923, "name": "Neo Geo Pocket Color", "manufacturer": "SNK"},
+    # Nintendo Consoles
+    UPS.NES: {"id": 7, "name": "Nintendo Entertainment System (NES)", "manufacturer": "Nintendo"},
+    UPS.FAMICOM: {"id": 7, "name": "Famicom", "manufacturer": "Nintendo"},
+    UPS.FDS: {"id": 4936, "name": "Famicom Disk System", "manufacturer": "Nintendo"},
+    UPS.SNES: {"id": 6, "name": "Super Nintendo (SNES)", "manufacturer": "Nintendo"},
+    UPS.SFAM: {"id": 6, "name": "Super Famicom", "manufacturer": "Nintendo"},
+    UPS.N64: {"id": 3, "name": "Nintendo 64", "manufacturer": "Nintendo"},
+    UPS.NGC: {"id": 2, "name": "Nintendo GameCube", "manufacturer": "Nintendo"},
+    UPS.WII: {"id": 9, "name": "Nintendo Wii", "manufacturer": "Nintendo"},
+    UPS.WIIU: {"id": 38, "name": "Nintendo Wii U", "manufacturer": "Nintendo"},
+    UPS.SWITCH: {"id": 4971, "name": "Nintendo Switch", "manufacturer": "Nintendo"},
+    # Nintendo Handhelds
+    UPS.GB: {"id": 4, "name": "Nintendo Game Boy", "manufacturer": "Nintendo"},
+    UPS.GBC: {"id": 41, "name": "Nintendo Game Boy Color", "manufacturer": "Nintendo"},
+    UPS.GBA: {"id": 5, "name": "Nintendo Game Boy Advance", "manufacturer": "Nintendo"},
+    UPS.NDS: {"id": 8, "name": "Nintendo DS", "manufacturer": "Nintendo"},
+    UPS.NINTENDO_DSI: {"id": 4957, "name": "Nintendo DSi", "manufacturer": "Nintendo"},
+    UPS.N3DS: {"id": 4912, "name": "Nintendo 3DS", "manufacturer": "Nintendo"},
+    UPS.VIRTUALBOY: {"id": 4918, "name": "Nintendo Virtual Boy", "manufacturer": "Nintendo"},
+    UPS.POKEMON_MINI: {"id": 4957, "name": "Pokémon mini", "manufacturer": "Nintendo"},
+    UPS.G_AND_W: {"id": 4950, "name": "Game & Watch", "manufacturer": "Nintendo"},
+    # Oric
+    UPS.ORIC: {"id": 4985, "name": "Oric", "manufacturer": "Oric International"},
+    # Ouya
+    UPS.OUYA: {"id": 4921, "name": "Ouya", "manufacturer": "Ouya"},
+    # Panic
+    UPS.PLAYDATE: {"id": 4997, "name": "Playdate", "manufacturer": "Panic"},
+    # RCA
+    UPS.RCA_STUDIO_II: {"id": 4967, "name": "RCA Studio II", "manufacturer": "RCA"},
+    # SAM Coupé
+    UPS.SAM_COUPE: {"id": 4988, "name": "SAM Coupé", "manufacturer": "Miles Gordon Technology"},
+    # Sega
+    UPS.SG1000: {"id": 4949, "name": "Sega SG-1000", "manufacturer": "Sega"},
+    UPS.SC3000: {"id": 4989, "name": "Sega SC-3000", "manufacturer": "Sega"},
+    UPS.SMS: {"id": 35, "name": "Sega Master System", "manufacturer": "Sega"},
+    UPS.GENESIS: {"id": 18, "name": "Sega Genesis", "manufacturer": "Sega"},
+    UPS.SEGACD: {"id": 21, "name": "Sega CD", "manufacturer": "Sega"},
+    UPS.SEGACD32: {"id": 4960, "name": "Sega CD 32X", "manufacturer": "Sega"},
+    UPS.SEGA32: {"id": 33, "name": "Sega 32X", "manufacturer": "Sega"},
+    UPS.SATURN: {"id": 17, "name": "Sega Saturn", "manufacturer": "Sega"},
+    UPS.DC: {"id": 16, "name": "Sega Dreamcast", "manufacturer": "Sega"},
+    UPS.GAMEGEAR: {"id": 20, "name": "Sega Game Gear", "manufacturer": "Sega"},
+    UPS.SEGA_PICO: {"id": 4958, "name": "Sega Pico", "manufacturer": "Sega"},
+    # Sharp
+    UPS.SHARP_X68000: {"id": 4931, "name": "Sharp X68000", "manufacturer": "Sharp"},
+    UPS.X1: {"id": 4990, "name": "Sharp X1", "manufacturer": "Sharp"},
+    # Sinclair
+    UPS.ZXS: {"id": 4913, "name": "Sinclair ZX Spectrum", "manufacturer": "Sinclair"},
+    UPS.ZX81: {"id": 4969, "name": "Sinclair ZX81", "manufacturer": "Sinclair"},
+    UPS.SINCLAIR_QL: {"id": 4995, "name": "Sinclair QL", "manufacturer": "Sinclair"},
+    # SNK
+    UPS.ACTION_MAX: {"id": 4976, "name": "Action Max", "manufacturer": "Worlds of Wonder"},
+    # Sony
+    UPS.PSX: {"id": 10, "name": "Sony Playstation", "manufacturer": "Sony"},
+    UPS.PS2: {"id": 11, "name": "Sony Playstation 2", "manufacturer": "Sony"},
+    UPS.PS3: {"id": 12, "name": "Sony Playstation 3", "manufacturer": "Sony"},
+    UPS.PS4: {"id": 4919, "name": "Sony Playstation 4", "manufacturer": "Sony"},
+    UPS.PS5: {"id": 4980, "name": "Sony Playstation 5", "manufacturer": "Sony"},
+    UPS.PSP: {"id": 13, "name": "Sony PSP", "manufacturer": "Sony"},
+    UPS.PSVITA: {"id": 39, "name": "Sony Playstation Vita", "manufacturer": "Sony"},
+    UPS.POCKETSTATION: {"id": 4959, "name": "PocketStation", "manufacturer": "Sony"},
+    # Supervision
+    UPS.SUPERVISION: {"id": 4966, "name": "Watara Supervision", "manufacturer": "Watara"},
+    # Tandy
+    UPS.TRS_80: {"id": 4941, "name": "TRS-80", "manufacturer": "Tandy"},
+    UPS.TRS_80_COLOR_COMPUTER: {"id": 4946, "name": "TRS-80 Color Computer", "manufacturer": "Tandy"},
+    # Texas Instruments
+    UPS.TI_994A: {"id": 4953, "name": "TI-99/4A", "manufacturer": "Texas Instruments"},
+    UPS.TI_99: {"id": 4953, "name": "TI-99/4", "manufacturer": "Texas Instruments"},
+    # Tiger
+    UPS.GAME_DOT_COM: {"id": 4961, "name": "Game.com", "manufacturer": "Tiger Electronics"},
+    # VTech
+    UPS.CREATIVISION: {"id": 4987, "name": "VTech CreatiVision", "manufacturer": "VTech"},
+    # Watara
+    UPS.MEGA_DUCK_SLASH_COUGAR_BOY: {"id": 4981, "name": "Mega Duck", "manufacturer": "Welback Holdings"},
+    # Modern / Cloud
+    UPS.STADIA: {"id": 4982, "name": "Google Stadia", "manufacturer": "Google"},
+    UPS.AMAZON_FIRE_TV: {"id": 4952, "name": "Amazon Fire TV", "manufacturer": "Amazon"},
+    # Gizmondo
+    UPS.GIZMONDO: {"id": 4951, "name": "Gizmondo", "manufacturer": "Tiger Telematics"},
+    # Evercade
+    UPS.EVERCADE: {"id": 5000, "name": "Evercade", "manufacturer": "Blaze Entertainment"},
 }

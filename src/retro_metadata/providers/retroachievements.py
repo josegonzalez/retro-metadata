@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Final
 
@@ -36,6 +37,61 @@ RA_TAG_REGEX: Final = re.compile(r"\(ra-(\d+)\)", re.IGNORECASE)
 
 # Base URL for media assets
 RA_MEDIA_URL: Final = "https://media.retroachievements.org"
+
+# Base URL for achievement badges
+RA_BADGE_URL: Final = "https://media.retroachievements.org/Badge"
+
+
+@dataclass
+class RAGameAchievement:
+    """RetroAchievements achievement data.
+
+    Attributes:
+        id: Achievement ID
+        title: Achievement title/name
+        description: Achievement description
+        points: Points awarded for unlocking
+        badge_id: Badge ID for constructing image URL
+        badge_url: Full URL to badge image
+        badge_url_locked: Full URL to locked badge image
+        type: Achievement type (e.g., "progression", "win_condition", "missable")
+        num_awarded: Number of times awarded
+        num_awarded_hardcore: Number of times awarded in hardcore mode
+        display_order: Display order in the list
+    """
+
+    id: int
+    title: str
+    description: str = ""
+    points: int = 0
+    badge_id: str = ""
+    badge_url: str = ""
+    badge_url_locked: str = ""
+    type: str = ""
+    num_awarded: int = 0
+    num_awarded_hardcore: int = 0
+    display_order: int = 0
+
+    @classmethod
+    def from_api_data(cls, data: dict[str, Any]) -> "RAGameAchievement":
+        """Create RAGameAchievement from API response data."""
+        badge_id = str(data.get("BadgeName", ""))
+        badge_url = f"{RA_BADGE_URL}/{badge_id}.png" if badge_id else ""
+        badge_url_locked = f"{RA_BADGE_URL}/{badge_id}_lock.png" if badge_id else ""
+
+        return cls(
+            id=data.get("ID", 0),
+            title=data.get("Title", ""),
+            description=data.get("Description", ""),
+            points=data.get("Points", 0),
+            badge_id=badge_id,
+            badge_url=badge_url,
+            badge_url_locked=badge_url_locked,
+            type=data.get("type", ""),
+            num_awarded=data.get("NumAwarded", 0),
+            num_awarded_hardcore=data.get("NumAwardedHardcore", 0),
+            display_order=data.get("DisplayOrder", 0),
+        )
 
 
 class RetroAchievementsProvider(MetadataProvider):
@@ -202,6 +258,36 @@ class RetroAchievementsProvider(MetadataProvider):
             return None
 
         return self._build_game_result(result)
+
+    async def get_achievements(self, game_id: int) -> list[RAGameAchievement]:
+        """Get all achievements for a game.
+
+        Args:
+            game_id: RetroAchievements game ID
+
+        Returns:
+            List of RAGameAchievement objects
+        """
+        if not self.is_enabled:
+            return []
+
+        result = await self._request("/API_GetGameExtended.php", {"i": str(game_id)})
+
+        if not isinstance(result, dict):
+            return []
+
+        achievements_data = result.get("Achievements", {})
+        if not achievements_data:
+            return []
+
+        achievements = []
+        for ach_data in achievements_data.values():
+            if isinstance(ach_data, dict):
+                achievements.append(RAGameAchievement.from_api_data(ach_data))
+
+        # Sort by display order
+        achievements.sort(key=lambda a: a.display_order)
+        return achievements
 
     async def lookup_by_hash(
         self,
@@ -392,6 +478,13 @@ class RetroAchievementsProvider(MetadataProvider):
                 )
             )
 
+        # Extract achievement statistics
+        achievements_data = game.get("Achievements", {})
+        achievement_count = len(achievements_data) if achievements_data else game.get("NumAchievements", 0)
+        total_points = sum(
+            a.get("Points", 0) for a in achievements_data.values()
+        ) if isinstance(achievements_data, dict) else game.get("points_total", 0)
+
         return GameMetadata(
             first_release_date=first_release_date,
             genres=genres,
@@ -400,7 +493,13 @@ class RetroAchievementsProvider(MetadataProvider):
             developer=game.get("Developer", ""),
             publisher=game.get("Publisher", ""),
             release_year=release_year,
-            raw_data=game,
+            raw_data={
+                **game,
+                "achievement_count": achievement_count,
+                "total_points": total_points,
+                "players_total": game.get("players_total", 0),
+                "players_hardcore": game.get("players_hardcore", 0),
+            },
         )
 
     def get_platform(self, slug: str) -> Platform | None:
@@ -448,6 +547,7 @@ RA_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.ATARI_ST: {"id": 36, "name": "Atari ST"},
     UPS.COLECOVISION: {"id": 44, "name": "ColecoVision"},
     UPS.DC: {"id": 40, "name": "Dreamcast"},
+    UPS.ELEKTOR: {"id": 75, "name": "Elektor TV Games Computer"},
     UPS.FAIRCHILD_CHANNEL_F: {"id": 57, "name": "Fairchild Channel F"},
     UPS.GB: {"id": 4, "name": "Game Boy"},
     UPS.GBA: {"id": 5, "name": "Game Boy Advance"},
@@ -455,8 +555,10 @@ RA_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.GAMEGEAR: {"id": 15, "name": "Game Gear"},
     UPS.GENESIS: {"id": 1, "name": "Mega Drive"},
     UPS.INTELLIVISION: {"id": 45, "name": "Intellivision"},
+    UPS.INTERTON_VC_4000: {"id": 75, "name": "Interton VC 4000"},
     UPS.JAGUAR: {"id": 17, "name": "Jaguar"},
     UPS.LYNX: {"id": 13, "name": "Lynx"},
+    UPS.MEGA_DUCK_SLASH_COUGAR_BOY: {"id": 69, "name": "Mega Duck"},
     UPS.MSX: {"id": 29, "name": "MSX"},
     UPS.N64: {"id": 2, "name": "Nintendo 64"},
     UPS.NDS: {"id": 18, "name": "Nintendo DS"},
@@ -464,8 +566,10 @@ RA_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.NGC: {"id": 16, "name": "GameCube"},
     UPS.NEO_GEO_CD: {"id": 56, "name": "Neo Geo CD"},
     UPS.NEO_GEO_POCKET: {"id": 14, "name": "Neo Geo Pocket"},
+    UPS.NINTENDO_DSI: {"id": 78, "name": "Nintendo DSi"},
     UPS.ODYSSEY_2: {"id": 23, "name": "Odyssey 2"},
     UPS.PC_8800_SERIES: {"id": 47, "name": "PC-8000/8800"},
+    UPS.PC_9800_SERIES: {"id": 48, "name": "PC-9800"},
     UPS.PC_FX: {"id": 49, "name": "PC-FX"},
     UPS.POKEMON_MINI: {"id": 24, "name": "Pokemon Mini"},
     UPS.PSX: {"id": 12, "name": "PlayStation"},
@@ -479,10 +583,16 @@ RA_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.SNES: {"id": 3, "name": "SNES"},
     UPS.SUPERGRAFX: {"id": 76, "name": "SuperGrafx"},
     UPS.TG16: {"id": 8, "name": "TurboGrafx-16"},
+    UPS.UZEBOX: {"id": 80, "name": "Uzebox"},
     UPS.VECTREX: {"id": 46, "name": "Vectrex"},
     UPS.VIRTUALBOY: {"id": 28, "name": "Virtual Boy"},
     UPS.SUPERVISION: {"id": 63, "name": "Watara Supervision"},
+    UPS.WASM_4: {"id": 72, "name": "WASM-4"},
+    UPS.WII: {"id": 19, "name": "Wii"},
     UPS.WONDERSWAN: {"id": 53, "name": "WonderSwan"},
     UPS.SHARP_X68000: {"id": 52, "name": "Sharp X68000"},
     UPS.ZXS: {"id": 34, "name": "ZX Spectrum"},
 }
+
+# Reverse lookup from RA console ID to UPS slug
+RA_ID_TO_SLUG: dict[int, UPS] = {v["id"]: k for k, v in RA_PLATFORM_MAP.items()}
