@@ -1,0 +1,113 @@
+# Maps RomM source files to library modules
+# Used by sync_upstream.py for tracking changes
+
+mappings:
+  - source: backend/handler/metadata/base_handler.py
+    targets:
+      - module: core/matching.py
+        functions:
+          - find_best_match
+          - _jaro_winkler_similarity
+      - module: core/normalization.py
+        functions:
+          - normalize_search_term
+          - _normalize_search_term
+      - module: platforms/slugs.py
+        classes:
+          - UniversalPlatformSlug
+
+  - source: backend/adapters/services/igdb_types.py
+    targets:
+      - module: types/igdb.py
+        copy_entire_file: true
+
+  - source: backend/adapters/services/mobygames_types.py
+    targets:
+      - module: types/mobygames.py
+        copy_entire_file: true
+
+  - source: backend/adapters/services/screenscraper_types.py
+    targets:
+      - module: types/screenscraper.py
+        copy_entire_file: true
+
+  - source: backend/adapters/services/retroachievements_types.py
+    targets:
+      - module: types/retroachievements.py
+        copy_entire_file: true
+
+  - source: backend/adapters/services/steamgriddb_types.py
+    targets:
+      - module: types/steamgriddb.py
+        copy_entire_file: true
+
+  - source: backend/handler/metadata/igdb_handler.py
+    targets:
+      - module: providers/igdb.py
+        classes:
+          - IGDBHandler
+        exclude_methods:
+          - _romm_specific_method
+      - module: platforms/mappings.py
+        variables:
+          - IGDB_PLATFORM_MAP
+
+  - source: backend/handler/metadata/moby_handler.py
+    targets:
+      - module: providers/mobygames.py
+        classes:
+          - MobyGamesHandler
+      - module: platforms/mappings.py
+        variables:
+          - MOBYGAMES_PLATFORM_MAP
+
+  - source: backend/handler/metadata/ss_handler.py
+    targets:
+      - module: providers/screenscraper.py
+        classes:
+          - ScreenScraperHandler
+      - module: platforms/mappings.py
+        variables:
+          - SCREENSCRAPER_PLATFORM_MAP
+
+  - source: backend/handler/metadata/ra_handler.py
+    targets:
+      - module: providers/retroachievements.py
+        classes:
+          - RetroAchievementsHandler
+
+  - source: backend/handler/metadata/sgdb_handler.py
+    targets:
+      - module: providers/steamgriddb.py
+        classes:
+          - SteamGridDBHandler
+
+  - source: backend/handler/metadata/hltb_handler.py
+    targets:
+      - module: providers/hltb.py
+        classes:
+          - HLTBHandler
+
+  - source: backend/adapters/services/igdb.py
+    targets:
+      - module: providers/igdb.py
+        functions:
+          - _authenticate
+          - _make_request
+
+  - source: backend/adapters/services/mobygames.py
+    targets:
+      - module: providers/mobygames.py
+        functions:
+          - _make_request
+
+# Track these files for changes
+watch_files:
+  - backend/handler/metadata/*.py
+  - backend/adapters/services/*.py
+  - backend/adapters/services/*_types.py
+
+# Version compatibility
+compatibility:
+  romm_version: "3.x"
+  library_version: "0.1.x"
