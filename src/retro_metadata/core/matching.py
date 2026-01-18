@@ -28,6 +28,7 @@ def jaro_winkler_similarity(s1: str, s2: str) -> float:
 
     Jaro-Winkler is particularly effective for short strings like game titles.
     It returns a value between 0 and 1, where 1 indicates an exact match.
+    Comparison is case-insensitive.
 
     Args:
         s1: First string to compare
@@ -36,7 +37,7 @@ def jaro_winkler_similarity(s1: str, s2: str) -> float:
     Returns:
         Similarity score between 0 and 1
     """
-    return _jarowinkler.similarity(s1, s2)
+    return _jarowinkler.similarity(s1.lower(), s2.lower())
 
 
 def find_best_match(
@@ -45,6 +46,7 @@ def find_best_match(
     min_similarity_score: float = DEFAULT_MIN_SIMILARITY,
     split_candidate_name: bool = False,
     normalize: bool = True,
+    first_n_only: int | None = None,
 ) -> tuple[str | None, float]:
     """Find the best matching name from a list of candidates.
 
@@ -58,6 +60,7 @@ def find_best_match(
         split_candidate_name: If True, also try matching against the last part of
             candidate names split by colons/dashes/slashes (default: False)
         normalize: Whether to normalize strings before comparison (default: True)
+        first_n_only: If specified, only check the first N candidates (default: None)
 
     Returns:
         Tuple of (best_match_name, similarity_score) or (None, 0.0) if no good match
@@ -82,7 +85,10 @@ def find_best_match(
     else:
         search_term_normalized = search_term.lower().strip()
 
-    for candidate in candidates:
+    # Limit candidates if first_n_only is specified
+    candidates_to_check = candidates[:first_n_only] if first_n_only else candidates
+
+    for candidate in candidates_to_check:
         # Normalize the candidate name
         if normalize:
             candidate_normalized = normalize_search_term(candidate)

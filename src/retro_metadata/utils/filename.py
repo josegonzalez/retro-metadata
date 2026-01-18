@@ -142,8 +142,14 @@ def clean_filename(filename: str, remove_extension: bool = True) -> str:
     # Get just the filename if a path was provided
     name = Path(filename).name
 
-    # Remove extension if requested
-    if remove_extension:
+    # Save extension if keeping it (extract before tag removal)
+    ext = ""
+    if not remove_extension:
+        ext_match = EXTENSION_PATTERN.search(name)
+        if ext_match:
+            ext = ext_match.group(0)
+            name = EXTENSION_PATTERN.sub("", name)
+    else:
         name = EXTENSION_PATTERN.sub("", name)
 
     # Remove all tags in parentheses and brackets
@@ -151,6 +157,10 @@ def clean_filename(filename: str, remove_extension: bool = True) -> str:
 
     # Clean up extra whitespace
     name = " ".join(name.split())
+
+    # Reattach extension if keeping it
+    if ext:
+        name = name + ext
 
     return name.strip()
 

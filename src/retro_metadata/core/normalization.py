@@ -17,7 +17,7 @@ LEADING_ARTICLE_PATTERN: Final = re.compile(r"^(a|an|the)\b", re.IGNORECASE)
 COMMA_ARTICLE_PATTERN: Final = re.compile(r",\s(a|an|the)\b(?=\s*[^\w\s]|$)", re.IGNORECASE)
 NON_WORD_SPACE_PATTERN: Final = re.compile(r"[^\w\s]")
 MULTIPLE_SPACE_PATTERN: Final = re.compile(r"\s+")
-SEARCH_TERM_SPLIT_PATTERN: Final = re.compile(r"[\:\-\/]")
+SEARCH_TERM_SPLIT_PATTERN: Final = re.compile(r"[\:\-\/&]")
 SEARCH_TERM_NORMALIZER: Final = re.compile(r"\s*[:-]\s+")
 
 # Sensitive keys that should be masked in URLs
