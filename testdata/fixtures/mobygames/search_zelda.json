@@ -1,0 +1,53 @@
+{
+  "games": [
+    {
+      "game_id": 564,
+      "title": "The Legend of Zelda: A Link to the Past",
+      "moby_url": "https://www.mobygames.com/game/564/the-legend-of-zelda-a-link-to-the-past/",
+      "platforms": [
+        {
+          "platform_id": 15,
+          "platform_name": "SNES"
+        },
+        {
+          "platform_id": 12,
+          "platform_name": "Game Boy Advance"
+        }
+      ],
+      "sample_cover": {
+        "image": "https://cdn.mobygames.com/covers/564_front.jpg",
+        "thumbnail_image": "https://cdn.mobygames.com/covers/564_front_thumb.jpg"
+      }
+    },
+    {
+      "game_id": 6691,
+      "title": "The Legend of Zelda",
+      "moby_url": "https://www.mobygames.com/game/6691/the-legend-of-zelda/",
+      "platforms": [
+        {
+          "platform_id": 22,
+          "platform_name": "NES"
+        }
+      ],
+      "sample_cover": {
+        "image": "https://cdn.mobygames.com/covers/6691_front.jpg",
+        "thumbnail_image": "https://cdn.mobygames.com/covers/6691_front_thumb.jpg"
+      }
+    },
+    {
+      "game_id": 7163,
+      "title": "The Legend of Zelda: Ocarina of Time",
+      "moby_url": "https://www.mobygames.com/game/7163/the-legend-of-zelda-ocarina-of-time/",
+      "platforms": [
+        {
+          "platform_id": 9,
+          "platform_name": "Nintendo 64"
+        }
+      ],
+      "sample_cover": {
+        "image": "https://cdn.mobygames.com/covers/7163_front.jpg",
+        "thumbnail_image": "https://cdn.mobygames.com/covers/7163_front_thumb.jpg"
+      }
+    }
+  ]
+}

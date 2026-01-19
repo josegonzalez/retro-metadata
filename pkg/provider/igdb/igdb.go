@@ -83,12 +83,33 @@ type Provider struct {
 	paginationLimit int
 }
 
+// Options contains optional configuration for the IGDB provider.
+type Options struct {
+	BaseURL  string // Override the IGDB API base URL (for testing)
+	TokenURL string // Override the OAuth token URL (for testing)
+}
+
 // NewProvider creates a new IGDB provider instance.
 func NewProvider(config retrometadata.ProviderConfig, c cache.Cache) (*Provider, error) {
+	return NewProviderWithOptions(config, c, Options{})
+}
+
+// NewProviderWithOptions creates a new IGDB provider instance with custom options.
+func NewProviderWithOptions(config retrometadata.ProviderConfig, c cache.Cache, opts Options) (*Provider, error) {
+	baseURL := "https://api.igdb.com/v4"
+	if opts.BaseURL != "" {
+		baseURL = opts.BaseURL
+	}
+
+	tokenURL := "https://id.twitch.tv/oauth2/token"
+	if opts.TokenURL != "" {
+		tokenURL = opts.TokenURL
+	}
+
 	return &Provider{
 		BaseProvider:    provider.NewBaseProvider("igdb", config, c),
-		baseURL:         "https://api.igdb.com/v4",
-		twitchURL:       "https://id.twitch.tv/oauth2/token",
+		baseURL:         baseURL,
+		twitchURL:       tokenURL,
 		userAgent:       "retro-metadata/1.0",
 		httpClient:      &http.Client{Timeout: 30 * time.Second},
 		paginationLimit: 200,

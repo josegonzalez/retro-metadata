@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1074,
+    "name": "Super Mario World",
+    "cover": {
+      "id": 12345,
+      "url": "//images.igdb.com/igdb/image/upload/t_cover_big/co1234.jpg"
+    },
+    "platforms": [
+      {
+        "id": 19,
+        "name": "Super Nintendo Entertainment System"
+      }
+    ],
+    "first_release_date": 667958400,
+    "slug": "super-mario-world"
+  },
+  {
+    "id": 1068,
+    "name": "Super Mario Bros.",
+    "cover": {
+      "id": 12346,
+      "url": "//images.igdb.com/igdb/image/upload/t_cover_big/co1235.jpg"
+    },
+    "platforms": [
+      {
+        "id": 18,
+        "name": "Nintendo Entertainment System"
+      }
+    ],
+    "first_release_date": 495158400,
+    "slug": "super-mario-bros"
+  },
+  {
+    "id": 1070,
+    "name": "Super Mario Bros. 3",
+    "cover": {
+      "id": 12347,
+      "url": "//images.igdb.com/igdb/image/upload/t_cover_big/co1236.jpg"
+    },
+    "platforms": [
+      {
+        "id": 18,
+        "name": "Nintendo Entertainment System"
+      }
+    ],
+    "first_release_date": 603504000,
+    "slug": "super-mario-bros-3"
+  }
+]

@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1074,
+    "name": "Super Mario World",
+    "summary": "Super Mario World is a side-scrolling platformer developed by Nintendo EAD and published by Nintendo for the Super Nintendo Entertainment System on November 21, 1990 in Japan.",
+    "cover": {
+      "id": 12345,
+      "url": "//images.igdb.com/igdb/image/upload/t_cover_big/co1234.jpg"
+    },
+    "screenshots": [
+      {
+        "id": 1001,
+        "url": "//images.igdb.com/igdb/image/upload/t_screenshot_big/sc1001.jpg"
+      },
+      {
+        "id": 1002,
+        "url": "//images.igdb.com/igdb/image/upload/t_screenshot_big/sc1002.jpg"
+      }
+    ],
+    "platforms": [
+      {
+        "id": 19,
+        "name": "Super Nintendo Entertainment System"
+      }
+    ],
+    "genres": [
+      {
+        "id": 8,
+        "name": "Platform"
+      },
+      {
+        "id": 31,
+        "name": "Adventure"
+      }
+    ],
+    "involved_companies": [
+      {
+        "company": {
+          "id": 70,
+          "name": "Nintendo"
+        },
+        "developer": true,
+        "publisher": true
+      }
+    ],
+    "franchises": [
+      {
+        "id": 24,
+        "name": "Mario"
+      }
+    ],
+    "game_modes": [
+      {
+        "id": 1,
+        "name": "Single player"
+      },
+      {
+        "id": 2,
+        "name": "Multiplayer"
+      }
+    ],
+    "player_perspectives": [
+      {
+        "id": 4,
+        "name": "Side view"
+      }
+    ],
+    "first_release_date": 667958400,
+    "total_rating": 92.5,
+    "total_rating_count": 1500,
+    "aggregated_rating": 95.0,
+    "aggregated_rating_count": 25,
+    "slug": "super-mario-world"
+  }
+]

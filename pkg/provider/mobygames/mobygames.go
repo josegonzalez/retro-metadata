@@ -46,11 +46,26 @@ type Provider struct {
 	httpClient *http.Client
 }
 
+// Options contains optional configuration for the MobyGames provider.
+type Options struct {
+	BaseURL string // Override the MobyGames API base URL (for testing)
+}
+
 // NewProvider creates a new MobyGames provider instance.
 func NewProvider(config retrometadata.ProviderConfig, c cache.Cache) (*Provider, error) {
+	return NewProviderWithOptions(config, c, Options{})
+}
+
+// NewProviderWithOptions creates a new MobyGames provider instance with custom options.
+func NewProviderWithOptions(config retrometadata.ProviderConfig, c cache.Cache, opts Options) (*Provider, error) {
+	baseURL := "https://api.mobygames.com/v1"
+	if opts.BaseURL != "" {
+		baseURL = opts.BaseURL
+	}
+
 	p := &Provider{
 		BaseProvider: provider.NewBaseProvider("mobygames", config, c),
-		baseURL:      "https://api.mobygames.com/v1",
+		baseURL:      baseURL,
 		userAgent:    "retro-metadata/1.0",
 		httpClient:   &http.Client{Timeout: 30 * time.Second},
 	}

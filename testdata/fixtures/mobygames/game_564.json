@@ -1,0 +1,46 @@
+{
+  "game_id": 564,
+  "title": "The Legend of Zelda: A Link to the Past",
+  "moby_url": "https://www.mobygames.com/game/564/the-legend-of-zelda-a-link-to-the-past/",
+  "description": "The Legend of Zelda: A Link to the Past is an action-adventure game developed and published by Nintendo for the Super Nintendo Entertainment System.",
+  "platforms": [
+    {
+      "platform_id": 15,
+      "platform_name": "SNES",
+      "first_release_date": "1991-11-21"
+    },
+    {
+      "platform_id": 12,
+      "platform_name": "Game Boy Advance",
+      "first_release_date": "2002-12-02"
+    }
+  ],
+  "genres": [
+    {
+      "genre_id": 1,
+      "genre_name": "Action",
+      "genre_category": "Basic Genres",
+      "genre_category_id": 1
+    },
+    {
+      "genre_id": 2,
+      "genre_name": "Role-Playing (RPG)",
+      "genre_category": "Basic Genres",
+      "genre_category_id": 1
+    }
+  ],
+  "sample_cover": {
+    "image": "https://cdn.mobygames.com/covers/564_front.jpg",
+    "thumbnail_image": "https://cdn.mobygames.com/covers/564_front_thumb.jpg"
+  },
+  "sample_screenshots": [
+    {
+      "image": "https://cdn.mobygames.com/screenshots/564_1.png",
+      "thumbnail_image": "https://cdn.mobygames.com/screenshots/564_1_thumb.png"
+    },
+    {
+      "image": "https://cdn.mobygames.com/screenshots/564_2.png",
+      "thumbnail_image": "https://cdn.mobygames.com/screenshots/564_2_thumb.png"
+    }
+  ]
+}

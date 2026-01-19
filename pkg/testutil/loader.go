@@ -18,16 +18,18 @@ type TestData struct {
 
 // TestCase represents a single test case.
 type TestCase struct {
-	ID                  string      `json:"id"`
-	Description         string      `json:"description"`
-	Category            string      `json:"category"`
-	Input               interface{} `json:"input"`
-	Expected            interface{} `json:"expected"`
-	ExpectedMin         *float64    `json:"expected_min,omitempty"`
-	ExpectedMax         *float64    `json:"expected_max,omitempty"`
-	ExpectedContains    interface{} `json:"expected_contains,omitempty"`
-	ExpectedNotContains interface{} `json:"expected_not_contains,omitempty"`
-	Skip                *SkipConfig `json:"skip,omitempty"`
+	ID                  string                 `json:"id"`
+	Description         string                 `json:"description"`
+	Category            string                 `json:"category"`
+	Input               interface{}            `json:"input"`
+	Operations          []interface{}          `json:"operations,omitempty"`
+	Config              map[string]interface{} `json:"config,omitempty"`
+	Expected            interface{}            `json:"expected"`
+	ExpectedMin         *float64               `json:"expected_min,omitempty"`
+	ExpectedMax         *float64               `json:"expected_max,omitempty"`
+	ExpectedContains    interface{}            `json:"expected_contains,omitempty"`
+	ExpectedNotContains interface{}            `json:"expected_not_contains,omitempty"`
+	Skip                *SkipConfig            `json:"skip,omitempty"`
 }
 
 // SkipConfig contains skip conditions for specific languages.
