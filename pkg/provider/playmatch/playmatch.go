@@ -60,7 +60,7 @@ func (p *Provider) Name() string {
 
 func (p *Provider) request(ctx context.Context, endpoint string, params url.Values) (map[string]interface{}, error) {
 	reqURL := p.baseURL + endpoint
-	if params != nil && len(params) > 0 {
+	if len(params) > 0 {
 		reqURL += "?" + params.Encode()
 	}
 

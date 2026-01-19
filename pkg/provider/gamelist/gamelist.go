@@ -9,7 +9,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -17,9 +16,6 @@ import (
 )
 
 var (
-	// Regex to detect Gamelist ID tags
-	gamelistTagRegex = regexp.MustCompile(`(?i)\(gamelist-([a-f0-9-]+)\)`)
-
 	// XML tag to media URL key mapping
 	xmlTagMap = map[string]string{
 		"image":         "image_url",
@@ -195,9 +191,7 @@ func parseGame(decoder *xml.Decoder, start *xml.StartElement, game map[string]st
 }
 
 func resolvePath(path string, platformDir string) string {
-	if strings.HasPrefix(path, "./") {
-		path = path[2:]
-	}
+	path = strings.TrimPrefix(path, "./")
 
 	if platformDir != "" {
 		fullPath := filepath.Join(platformDir, path)

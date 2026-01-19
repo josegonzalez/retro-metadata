@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -64,7 +65,7 @@ func buildImageURL(gameID string, imageType string) string {
 
 func (p *Provider) request(ctx context.Context, endpoint string, params url.Values) (interface{}, error) {
 	reqURL := p.baseURL + endpoint
-	if params != nil && len(params) > 0 {
+	if len(params) > 0 {
 		reqURL += "?" + params.Encode()
 	}
 
@@ -405,8 +406,7 @@ func parseYear(dateStr string) int {
 	if len(dateStr) < 4 {
 		return 0
 	}
-	var year int
-	fmt.Sscanf(dateStr[:4], "%d", &year)
+	year, _ := strconv.Atoi(dateStr[:4])
 	return year
 }
 

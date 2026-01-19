@@ -165,7 +165,7 @@ func IsExactMatch(s1, s2 string, normalize bool) bool {
 	if normalize {
 		return normalization.NormalizeSearchTermDefault(s1) == normalization.NormalizeSearchTermDefault(s2)
 	}
-	return strings.ToLower(strings.TrimSpace(s1)) == strings.ToLower(strings.TrimSpace(s2))
+	return strings.EqualFold(strings.TrimSpace(s1), strings.TrimSpace(s2))
 }
 
 // MatchConfidence returns a human-readable confidence level for a match.
