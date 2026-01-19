@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(nlohmann_json REQUIRED)
+find_dependency(cpr REQUIRED)
+find_dependency(rapidfuzz REQUIRED)
+
+include("${CMAKE_CURRENT_LIST_DIR}/retro_metadata-targets.cmake")
+
+check_required_components(retro_metadata)

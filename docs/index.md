@@ -1,71 +1,43 @@
 # retro-metadata Documentation
 
-**retro-metadata** is a Python library for fetching game metadata from multiple providers. It's designed to be the core engine for ROM managers, game launchers, and emulation frontends.
-
-## Quick Start
-
-```python
-from retro_metadata import MetadataClient, MetadataConfig, ProviderConfig
-
-# Configure providers
-config = MetadataConfig(
-    igdb=ProviderConfig(
-        enabled=True,
-        credentials={
-            "client_id": "your_twitch_client_id",
-            "client_secret": "your_twitch_client_secret",
-        }
-    )
-)
-
-# Use the client
-async with MetadataClient(config) as client:
-    # Search for games
-    results = await client.search("Super Mario World", platform="snes")
-
-    # Identify a ROM file
-    game = await client.identify("Super Mario World (USA).sfc", platform="snes")
-
-    # Get by provider ID
-    game = await client.get_by_id("igdb", 1234)
-```
+Multi-language library for fetching game metadata from multiple providers. Available in **Python**, **Go**, and **C++**.
 
 ## Features
 
-- **Multiple Providers**: IGDB, MobyGames, ScreenScraper, RetroAchievements, SteamGridDB, HLTB
+- **Multiple Providers**: IGDB, MobyGames, ScreenScraper, RetroAchievements, SteamGridDB, HowLongToBeat, and more
 - **Smart Matching**: Jaro-Winkler similarity for fuzzy name matching
 - **ROM Identification**: Parse No-Intro filenames and identify games
 - **Caching**: Memory, Redis, and SQLite cache backends
-- **Async Support**: Built on asyncio for high performance
-- **Type Safety**: Full type hints and TypedDict definitions
+- **Async Support**: asyncio (Python), goroutines (Go), futures (C++)
+- **Type Safety**: Full type hints and strong typing across all implementations
 
-## Installation
+## Quick Example
 
-```bash
-pip install retro-metadata
+**Python:**
+```python
+async with MetadataClient(config) as client:
+    results = await client.search("Super Mario World", platform="snes")
 ```
 
-With optional dependencies:
-
-```bash
-# Redis cache support
-pip install retro-metadata[redis]
-
-# SQLite cache support
-pip install retro-metadata[sqlite]
-
-# All optional dependencies
-pip install retro-metadata[all]
+**Go:**
+```go
+results, err := client.Search(ctx, "Super Mario World", retrometadata.SearchOptions{Platform: "snes"})
 ```
 
-## UI Applications
+**C++:**
+```cpp
+auto results = provider->search("Super Mario World", opts);
+```
 
-- **CLI**: `pip install retro-metadata-cli`
-- **TUI**: `pip install retro-metadata-tui`
-- **Desktop**: `pip install retro-metadata-qt`
-- **Web**: `pip install retro-metadata-web`
+See the [Quick Start Guide](guides/quickstart.md) for complete examples in all languages.
 
 ## Documentation Contents
+
+### Guides
+- [Quick Start](guides/quickstart.md) - Getting started with Python, Go, and C++
+- [Caching](guides/caching.md) - Configure cache backends
+- [Filename Parsing](guides/filename-parsing.md) - Parse ROM filenames
+- [Platforms](guides/platforms.md) - Platform slug mappings
 
 ### Architecture
 - [Overview](architecture/overview.md) - System architecture
@@ -73,23 +45,41 @@ pip install retro-metadata[all]
 - [Providers](architecture/providers.md) - Provider implementation
 - [Caching](architecture/caching.md) - Cache backend design
 
-### Guides
-- [Installation](guides/installation.md) - Installation instructions
-- [Configuration](guides/configuration.md) - Configuration reference
-- [CLI Usage](guides/cli-usage.md) - CLI user guide
-- [Integration](guides/integration.md) - Integrating with other projects
-
-### API Reference
-- [MetadataClient](api/client.md) - Client API
-- [Providers](api/providers.md) - Provider APIs
-- [Types](api/types.md) - Type definitions
-- [Cache](api/cache.md) - Cache backend API
-
 ### Development
-- [Contributing](development/contributing.md) - Contribution guide
-- [Testing](development/testing.md) - Testing guide
-- [Adding Providers](development/adding-providers.md) - How to add providers
 - [Migration](development/migration.md) - Syncing with RomM upstream
+
+## Providers
+
+| Provider | API Key Required | Features |
+|----------|------------------|----------|
+| IGDB | Yes (Twitch OAuth) | Full metadata, artwork, ratings |
+| MobyGames | Yes | Full metadata, comprehensive database |
+| ScreenScraper | Yes (User/Pass) | Screenshots, box art, videos |
+| RetroAchievements | Yes | Achievement data, hashes |
+| SteamGridDB | Yes | High-quality artwork |
+| HowLongToBeat | No | Completion time estimates |
+| TheGamesDB | Yes | Box art, metadata |
+| LaunchBox | No (local XML) | Local metadata from LaunchBox |
+| Flashpoint | No | Flash/web game archive |
+| Hasheous | No | Hash-based identification |
+| Playmatch | No | Hash-to-IGDB ID matching |
+| Gamelist | No (local XML) | EmulationStation gamelist.xml |
+
+### Getting API Keys
+
+- **IGDB**: Create a Twitch developer app at https://dev.twitch.tv/console
+- **MobyGames**: Request at https://www.mobygames.com/info/api/
+- **ScreenScraper**: Register at https://screenscraper.fr/
+- **RetroAchievements**: Get from your profile at https://retroachievements.org/
+- **SteamGridDB**: Get at https://www.steamgriddb.com/profile/preferences/api
+- **TheGamesDB**: Request at https://thegamesdb.net/
+
+## UI Applications
+
+- **CLI**: `pip install retro-metadata-cli`
+- **TUI**: `pip install retro-metadata-tui`
+- **Desktop**: `pip install retro-metadata-qt`
+- **Web**: `pip install retro-metadata-web`
 
 ## License
 
