@@ -1,0 +1,140 @@
+{
+  "version": "1.0.0",
+  "test_suite": "extract_region",
+  "description": "Tests for extracting region codes from filenames",
+  "test_cases": [
+    {
+      "id": "usa_full",
+      "description": "USA region (full name)",
+      "category": "basic",
+      "input": "Game (USA).sfc",
+      "expected": "us"
+    },
+    {
+      "id": "usa_short",
+      "description": "USA region (short code U)",
+      "category": "basic",
+      "input": "Game (U).sfc",
+      "expected": "us"
+    },
+    {
+      "id": "europe_full",
+      "description": "Europe region (full name)",
+      "category": "basic",
+      "input": "Game (Europe).sfc",
+      "expected": "eu"
+    },
+    {
+      "id": "europe_short",
+      "description": "Europe region (short code E)",
+      "category": "basic",
+      "input": "Game (E).sfc",
+      "expected": "eu"
+    },
+    {
+      "id": "japan_full",
+      "description": "Japan region (full name)",
+      "category": "basic",
+      "input": "Game (Japan).sfc",
+      "expected": "jp"
+    },
+    {
+      "id": "japan_short",
+      "description": "Japan region (short code J)",
+      "category": "basic",
+      "input": "Game (J).sfc",
+      "expected": "jp"
+    },
+    {
+      "id": "world",
+      "description": "World region",
+      "category": "basic",
+      "input": "Game (World).sfc",
+      "expected": "wor"
+    },
+    {
+      "id": "comma_separated",
+      "description": "Comma-separated regions returns first match",
+      "category": "basic",
+      "input": "Game (USA, Europe).sfc",
+      "expected": "us"
+    },
+    {
+      "id": "no_region",
+      "description": "File with no region returns null",
+      "category": "edge_case",
+      "input": "Game [!].sfc",
+      "expected": null
+    },
+    {
+      "id": "korea",
+      "description": "Korea region",
+      "category": "basic",
+      "input": "Game (Korea).sfc",
+      "expected": "kr"
+    },
+    {
+      "id": "china",
+      "description": "China region",
+      "category": "basic",
+      "input": "Game (China).sfc",
+      "expected": "cn"
+    },
+    {
+      "id": "france",
+      "description": "France region",
+      "category": "basic",
+      "input": "Game (France).sfc",
+      "expected": "fr"
+    },
+    {
+      "id": "germany",
+      "description": "Germany region",
+      "category": "basic",
+      "input": "Game (Germany).sfc",
+      "expected": "de"
+    },
+    {
+      "id": "italy",
+      "description": "Italy region",
+      "category": "basic",
+      "input": "Game (Italy).sfc",
+      "expected": "it"
+    },
+    {
+      "id": "spain",
+      "description": "Spain region",
+      "category": "basic",
+      "input": "Game (Spain).sfc",
+      "expected": "es"
+    },
+    {
+      "id": "brazil",
+      "description": "Brazil region",
+      "category": "basic",
+      "input": "Game (Brazil).sfc",
+      "expected": "br"
+    },
+    {
+      "id": "australia",
+      "description": "Australia region",
+      "category": "basic",
+      "input": "Game (Australia).sfc",
+      "expected": "au"
+    },
+    {
+      "id": "asia",
+      "description": "Asia region",
+      "category": "basic",
+      "input": "Game (Asia).sfc",
+      "expected": "as"
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string input",
+      "category": "edge_case",
+      "input": "",
+      "expected": null
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "test_suite": "split_search_term",
+  "description": "Tests for splitting search terms by common delimiters",
+  "test_cases": [
+    {
+      "id": "split_by_hyphen",
+      "description": "Split by hyphen",
+      "category": "basic",
+      "input": "Super-Mario-World",
+      "expected_contains": ["Super", "Mario", "World"]
+    },
+    {
+      "id": "split_by_colon",
+      "description": "Split by colon",
+      "category": "basic",
+      "input": "Zelda: A Link to the Past",
+      "expected_min_length": 2
+    },
+    {
+      "id": "split_by_ampersand",
+      "description": "Split by ampersand",
+      "category": "basic",
+      "input": "Donkey Kong & Diddy Kong",
+      "expected_min_length": 2
+    },
+    {
+      "id": "split_by_slash",
+      "description": "Split by forward slash",
+      "category": "basic",
+      "input": "Game/Subtitle",
+      "expected_min_length": 2
+    },
+    {
+      "id": "no_split_needed",
+      "description": "No delimiter present",
+      "category": "basic",
+      "input": "Super Mario World",
+      "expected_contains": ["Super Mario World"]
+    },
+    {
+      "id": "multiple_delimiters",
+      "description": "Multiple different delimiters",
+      "category": "basic",
+      "input": "Game: Part 1 - Episode",
+      "expected_min_length": 3
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string input",
+      "category": "edge_case",
+      "input": "",
+      "expected": [""]
+    }
+  ]
+}

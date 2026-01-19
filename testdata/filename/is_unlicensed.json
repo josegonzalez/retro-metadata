@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "test_suite": "is_unlicensed",
+  "description": "Tests for detecting unlicensed/pirate/hack games",
+  "test_cases": [
+    {
+      "id": "unl_tag",
+      "description": "Unl tag detection",
+      "category": "basic",
+      "input": "Game (Unl).bin",
+      "expected": true
+    },
+    {
+      "id": "unlicensed_tag",
+      "description": "Unlicensed tag detection",
+      "category": "basic",
+      "input": "Game (Unlicensed).bin",
+      "expected": true
+    },
+    {
+      "id": "pirate_tag",
+      "description": "Pirate tag detection",
+      "category": "basic",
+      "input": "Game (Pirate).bin",
+      "expected": true
+    },
+    {
+      "id": "hack_tag",
+      "description": "Hack tag detection",
+      "category": "basic",
+      "input": "Game (Hack).bin",
+      "expected": true
+    },
+    {
+      "id": "not_unlicensed",
+      "description": "Regular game is not unlicensed",
+      "category": "basic",
+      "input": "Super Mario World (USA).sfc",
+      "expected": false
+    },
+    {
+      "id": "unlicensed_with_region",
+      "description": "Unlicensed with region tag",
+      "category": "basic",
+      "input": "Game (USA) (Unl).bin",
+      "expected": true
+    }
+  ]
+}

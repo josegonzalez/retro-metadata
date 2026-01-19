@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "test_suite": "extract_tags",
+  "description": "Tests for extracting tags from filenames (parentheses and brackets)",
+  "test_cases": [
+    {
+      "id": "parentheses_tags",
+      "description": "Extract tags in parentheses",
+      "category": "basic",
+      "input": "Super Mario World (USA).sfc",
+      "expected": ["USA"]
+    },
+    {
+      "id": "bracket_tags",
+      "description": "Extract tags in brackets",
+      "category": "basic",
+      "input": "Super Mario World [!].sfc",
+      "expected": ["!"]
+    },
+    {
+      "id": "multiple_tags",
+      "description": "Extract multiple tags of different types",
+      "category": "basic",
+      "input": "Game (USA) (Rev 1) [!].sfc",
+      "expected": ["USA", "Rev 1", "!"]
+    },
+    {
+      "id": "no_tags",
+      "description": "File with no tags returns empty array",
+      "category": "edge_case",
+      "input": "game.sfc",
+      "expected": []
+    },
+    {
+      "id": "language_tags",
+      "description": "Language tags",
+      "category": "basic",
+      "input": "Game (USA) (En,Fr,De).sfc",
+      "expected": ["USA", "En,Fr,De"]
+    },
+    {
+      "id": "version_tags",
+      "description": "Version tags",
+      "category": "basic",
+      "input": "Game (USA) (v1.1).sfc",
+      "expected": ["USA", "v1.1"]
+    },
+    {
+      "id": "bios_tag",
+      "description": "BIOS file tags",
+      "category": "basic",
+      "input": "[BIOS] PlayStation (USA).bin",
+      "expected": ["BIOS", "USA"]
+    },
+    {
+      "id": "goodtools_tags",
+      "description": "GoodTools verification tags",
+      "category": "basic",
+      "input": "Game (USA) [!] [T+Eng].sfc",
+      "expected": ["USA", "!", "T+Eng"]
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string input",
+      "category": "edge_case",
+      "input": "",
+      "expected": []
+    },
+    {
+      "id": "nested_parentheses",
+      "description": "Tags with special characters inside",
+      "category": "edge_case",
+      "input": "Game (USA, Europe).sfc",
+      "expected": ["USA, Europe"]
+    }
+  ]
+}

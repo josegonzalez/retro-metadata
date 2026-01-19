@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "test_suite": "find_best_match",
+  "description": "Tests for finding best matching string from candidates",
+  "test_cases": [
+    {
+      "id": "exact_match",
+      "description": "Find exact match in candidates",
+      "category": "basic",
+      "input": {
+        "search_term": "Super Mario World",
+        "candidates": ["Super Mario World", "Zelda", "Metroid"],
+        "min_similarity_score": 0.75
+      },
+      "expected": {
+        "match": "Super Mario World",
+        "score": 1.0
+      }
+    },
+    {
+      "id": "fuzzy_match",
+      "description": "Find fuzzy match",
+      "category": "basic",
+      "input": {
+        "search_term": "Super Mario Wrld",
+        "candidates": ["Super Mario World", "Super Mario Bros", "Super Mario Kart"],
+        "min_similarity_score": 0.75
+      },
+      "expected": {
+        "match": "Super Mario World",
+        "score_min": 0.8
+      }
+    },
+    {
+      "id": "no_match_above_threshold",
+      "description": "No match when none meet threshold",
+      "category": "basic",
+      "input": {
+        "search_term": "Super Mario World",
+        "candidates": ["Zelda", "Metroid", "Castlevania"],
+        "min_similarity_score": 0.9
+      },
+      "expected": {
+        "match": null,
+        "score": 0.0
+      }
+    },
+    {
+      "id": "empty_candidates",
+      "description": "Empty candidates list",
+      "category": "edge_case",
+      "input": {
+        "search_term": "test",
+        "candidates": [],
+        "min_similarity_score": 0.75
+      },
+      "expected": {
+        "match": null,
+        "score": 0.0
+      }
+    },
+    {
+      "id": "first_n_only",
+      "description": "Limit to first N candidates",
+      "category": "basic",
+      "input": {
+        "search_term": "Mario 5",
+        "candidates": ["Mario 1", "Mario 2", "Mario 3", "Mario 4", "Mario 5"],
+        "min_similarity_score": 0.75,
+        "first_n_only": 3
+      },
+      "expected": {
+        "match_not": "Mario 5"
+      }
+    },
+    {
+      "id": "case_insensitive_match",
+      "description": "Case insensitive matching",
+      "category": "basic",
+      "input": {
+        "search_term": "SUPER MARIO WORLD",
+        "candidates": ["super mario world", "zelda"],
+        "min_similarity_score": 0.75
+      },
+      "expected": {
+        "match": "super mario world",
+        "score": 1.0
+      }
+    }
+  ]
+}

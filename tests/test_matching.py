@@ -8,34 +8,31 @@ from retro_metadata.core.matching import (
 )
 from retro_metadata.core.normalization import split_search_term
 
+from tests.helpers.test_data_loader import pytest_generate_tests_from_data
+
 
 class TestJaroWinklerSimilarity:
-    """Tests for Jaro-Winkler similarity."""
+    """Tests for Jaro-Winkler similarity using shared test data."""
 
-    def test_identical_strings(self):
-        """Test that identical strings have similarity of 1.0."""
-        assert jaro_winkler_similarity("test", "test") == 1.0
+    @pytest.mark.parametrize(
+        "test_id, test_case",
+        pytest_generate_tests_from_data("matching", "jaro_winkler_similarity"),
+    )
+    def test_jaro_winkler_similarity(self, test_id, test_case):
+        """Test Jaro-Winkler similarity calculation."""
+        input_data = test_case["input"]
+        s1 = input_data["s1"]
+        s2 = input_data["s2"]
 
-    def test_completely_different_strings(self):
-        """Test that completely different strings have low similarity."""
-        score = jaro_winkler_similarity("abc", "xyz")
-        assert score < 0.5
+        result = jaro_winkler_similarity(s1, s2)
 
-    def test_similar_strings(self):
-        """Test that similar strings have high similarity."""
-        score = jaro_winkler_similarity("Super Mario World", "Super Mario World 2")
-        assert score > 0.8
-
-    def test_empty_strings(self):
-        """Test handling of empty strings."""
-        assert jaro_winkler_similarity("", "") == 1.0
-        assert jaro_winkler_similarity("test", "") == 0.0
-        assert jaro_winkler_similarity("", "test") == 0.0
-
-    def test_case_sensitivity(self):
-        """Test that comparison is case-insensitive."""
-        score = jaro_winkler_similarity("MARIO", "mario")
-        assert score == 1.0
+        # Handle different assertion types
+        if "expected" in test_case:
+            assert result == test_case["expected"], f"Test {test_id}: expected {test_case['expected']}, got {result}"
+        elif "expected_min" in test_case:
+            assert result >= test_case["expected_min"], f"Test {test_id}: expected >= {test_case['expected_min']}, got {result}"
+        elif "expected_max" in test_case:
+            assert result <= test_case["expected_max"], f"Test {test_id}: expected <= {test_case['expected_max']}, got {result}"
 
 
 class TestFindBestMatch:

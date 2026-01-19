@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "test_suite": "is_demo_file",
+  "description": "Tests for detecting demo/prototype/beta files",
+  "test_cases": [
+    {
+      "id": "demo_tag",
+      "description": "Demo tag detection",
+      "category": "basic",
+      "input": "Game (Demo).bin",
+      "expected": true
+    },
+    {
+      "id": "sample_tag",
+      "description": "Sample tag detection",
+      "category": "basic",
+      "input": "Game (Sample).bin",
+      "expected": true
+    },
+    {
+      "id": "proto_tag",
+      "description": "Proto tag detection",
+      "category": "basic",
+      "input": "Game (Proto).bin",
+      "expected": true
+    },
+    {
+      "id": "prototype_tag",
+      "description": "Prototype tag detection",
+      "category": "basic",
+      "input": "Game (Prototype).bin",
+      "expected": true
+    },
+    {
+      "id": "beta_tag",
+      "description": "Beta tag detection",
+      "category": "basic",
+      "input": "Game (Beta).bin",
+      "expected": true
+    },
+    {
+      "id": "alpha_tag",
+      "description": "Alpha tag detection",
+      "category": "basic",
+      "input": "Game (Alpha).bin",
+      "expected": true
+    },
+    {
+      "id": "trial_tag",
+      "description": "Trial tag detection",
+      "category": "basic",
+      "input": "Game (Trial).bin",
+      "expected": true
+    },
+    {
+      "id": "preview_tag",
+      "description": "Preview tag detection",
+      "category": "basic",
+      "input": "Game (Preview).bin",
+      "expected": true
+    },
+    {
+      "id": "not_demo",
+      "description": "Regular game is not demo",
+      "category": "basic",
+      "input": "Super Mario World (USA).sfc",
+      "expected": false
+    },
+    {
+      "id": "demo_with_region",
+      "description": "Demo with region tag",
+      "category": "basic",
+      "input": "Game (USA) (Demo).bin",
+      "expected": true
+    }
+  ]
+}

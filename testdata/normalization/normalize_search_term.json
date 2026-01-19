@@ -1,0 +1,161 @@
+{
+  "version": "1.0.0",
+  "test_suite": "normalize_search_term",
+  "description": "Tests for normalizing search terms",
+  "test_cases": [
+    {
+      "id": "basic_normalization",
+      "description": "Basic lowercase conversion",
+      "category": "basic",
+      "input": {
+        "name": "Super Mario World",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "super mario world"
+    },
+    {
+      "id": "remove_leading_article_the",
+      "description": "Remove leading article 'the'",
+      "category": "basic",
+      "input": {
+        "name": "The Legend of Zelda",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "legend of zelda"
+    },
+    {
+      "id": "remove_leading_article_a",
+      "description": "Remove leading article 'a'",
+      "category": "basic",
+      "input": {
+        "name": "A Boy and His Blob",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "boy and his blob"
+    },
+    {
+      "id": "keep_articles",
+      "description": "Keep articles when disabled",
+      "category": "basic",
+      "input": {
+        "name": "The Legend of Zelda",
+        "remove_articles": false,
+        "remove_punctuation": true
+      },
+      "expected_contains": "the"
+    },
+    {
+      "id": "remove_punctuation",
+      "description": "Remove punctuation marks",
+      "category": "basic",
+      "input": {
+        "name": "Super Mario World!",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "super mario world"
+    },
+    {
+      "id": "keep_punctuation",
+      "description": "Keep punctuation when disabled",
+      "category": "basic",
+      "input": {
+        "name": "Super Mario World!",
+        "remove_articles": true,
+        "remove_punctuation": false
+      },
+      "expected_contains": "!"
+    },
+    {
+      "id": "unicode_normalization",
+      "description": "Normalize Unicode characters",
+      "category": "unicode",
+      "input": {
+        "name": "Pokemon",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "pokemon"
+    },
+    {
+      "id": "unicode_accent_removal",
+      "description": "Remove accents from characters",
+      "category": "unicode",
+      "input": {
+        "name": "Cafe",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "cafe"
+    },
+    {
+      "id": "whitespace_handling",
+      "description": "Normalize multiple whitespace",
+      "category": "basic",
+      "input": {
+        "name": "  Super   Mario   World  ",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "super mario world"
+    },
+    {
+      "id": "special_characters",
+      "description": "Remove trademark symbols",
+      "category": "basic",
+      "input": {
+        "name": "Crash Bandicoot",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "crash bandicoot"
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string returns empty",
+      "category": "edge_case",
+      "input": {
+        "name": "",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": ""
+    },
+    {
+      "id": "underscore_to_space",
+      "description": "Convert underscores to spaces",
+      "category": "basic",
+      "input": {
+        "name": "Super_Mario_World",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected": "super mario world"
+    },
+    {
+      "id": "ampersand_removal",
+      "description": "Remove ampersand character",
+      "category": "basic",
+      "input": {
+        "name": "Donkey Kong & Diddy Kong",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected_not_contains": "&"
+    },
+    {
+      "id": "colon_handling",
+      "description": "Handle colon in title",
+      "category": "basic",
+      "input": {
+        "name": "Zelda: A Link to the Past",
+        "remove_articles": true,
+        "remove_punctuation": true
+      },
+      "expected_not_contains": ":"
+    }
+  ]
+}

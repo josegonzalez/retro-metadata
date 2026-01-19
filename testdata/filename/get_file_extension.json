@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "test_suite": "get_file_extension",
+  "description": "Tests for extracting file extensions from filenames",
+  "test_cases": [
+    {
+      "id": "basic_extension",
+      "description": "Basic file extension extraction",
+      "category": "basic",
+      "input": "game.sfc",
+      "expected": "sfc"
+    },
+    {
+      "id": "uppercase_extension",
+      "description": "Extension should be lowercased",
+      "category": "basic",
+      "input": "game.SFC",
+      "expected": "sfc"
+    },
+    {
+      "id": "no_extension",
+      "description": "File with no extension returns empty string",
+      "category": "edge_case",
+      "input": "game",
+      "expected": ""
+    },
+    {
+      "id": "multiple_dots",
+      "description": "File with multiple dots returns last extension",
+      "category": "basic",
+      "input": "game.name.sfc",
+      "expected": "sfc"
+    },
+    {
+      "id": "hidden_file_no_ext",
+      "description": "Hidden file with no extension",
+      "category": "edge_case",
+      "input": ".gitignore",
+      "expected": "gitignore"
+    },
+    {
+      "id": "compressed_rom",
+      "description": "Compressed ROM file",
+      "category": "basic",
+      "input": "Super Mario World (USA).zip",
+      "expected": "zip"
+    },
+    {
+      "id": "nes_extension",
+      "description": "NES ROM extension",
+      "category": "basic",
+      "input": "Zelda.nes",
+      "expected": "nes"
+    },
+    {
+      "id": "mixed_case_filename",
+      "description": "Mixed case in filename and extension",
+      "category": "basic",
+      "input": "Game.ROM",
+      "expected": "rom"
+    },
+    {
+      "id": "numeric_extension",
+      "description": "Numeric extension",
+      "category": "edge_case",
+      "input": "game.001",
+      "expected": "001"
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string input",
+      "category": "edge_case",
+      "input": "",
+      "expected": ""
+    }
+  ]
+}

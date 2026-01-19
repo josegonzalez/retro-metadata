@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "test_suite": "parse_no_intro_filename",
+  "description": "Tests for parsing No-Intro naming convention filenames",
+  "test_cases": [
+    {
+      "id": "basic_parsing",
+      "description": "Basic No-Intro filename parsing",
+      "category": "basic",
+      "input": "Super Mario World (USA) (Rev 1).sfc",
+      "expected": {
+        "name": "Super Mario World",
+        "region": "us",
+        "version": "Rev 1",
+        "extension": "sfc",
+        "tags": ["USA", "Rev 1"]
+      }
+    },
+    {
+      "id": "language_tags",
+      "description": "Parse with language tags",
+      "category": "basic",
+      "input": "Game (USA) (En,Fr) [!].sfc",
+      "expected": {
+        "name": "Game",
+        "region": "us",
+        "version": null,
+        "extension": "sfc",
+        "tags": ["USA", "En,Fr", "!"]
+      }
+    },
+    {
+      "id": "version_v_prefix",
+      "description": "Parse version with v prefix",
+      "category": "basic",
+      "input": "Game (USA) (v1.1).sfc",
+      "expected": {
+        "name": "Game",
+        "region": "us",
+        "version": "v1.1",
+        "extension": "sfc",
+        "tags": ["USA", "v1.1"]
+      }
+    },
+    {
+      "id": "no_version",
+      "description": "Parse without version tag",
+      "category": "basic",
+      "input": "Game (Japan).sfc",
+      "expected": {
+        "name": "Game",
+        "region": "jp",
+        "version": null,
+        "extension": "sfc",
+        "tags": ["Japan"]
+      }
+    },
+    {
+      "id": "complex_tags",
+      "description": "Parse with multiple complex tags",
+      "category": "basic",
+      "input": "Game (Europe) (En,Fr,De,Es,It) (Rev 2) [!].sfc",
+      "expected": {
+        "name": "Game",
+        "region": "eu",
+        "version": "Rev 2",
+        "extension": "sfc",
+        "tags": ["Europe", "En,Fr,De,Es,It", "Rev 2", "!"]
+      }
+    },
+    {
+      "id": "world_region",
+      "description": "Parse world region",
+      "category": "basic",
+      "input": "Game (World).sfc",
+      "expected": {
+        "name": "Game",
+        "region": "wor",
+        "version": null,
+        "extension": "sfc",
+        "tags": ["World"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Test Data Schema",
+  "description": "Schema for shared test data files",
+  "type": "object",
+  "required": ["version", "test_suite", "description", "test_cases"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the test data format"
+    },
+    "test_suite": {
+      "type": "string",
+      "description": "Name of the function or feature being tested"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the test suite"
+    },
+    "test_cases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/testCase"
+      },
+      "minItems": 1
+    }
+  },
+  "definitions": {
+    "testCase": {
+      "type": "object",
+      "required": ["id", "description", "category"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Unique identifier for the test case"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this tests"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["basic", "edge_case", "unicode", "error", "timing"],
+          "description": "Category of the test case"
+        },
+        "input": {
+          "description": "Input value(s) for the test"
+        },
+        "expected": {
+          "description": "Expected output value"
+        },
+        "expected_min": {
+          "type": "number",
+          "description": "Expected minimum value (for numeric comparisons)"
+        },
+        "expected_max": {
+          "type": "number",
+          "description": "Expected maximum value (for numeric comparisons)"
+        },
+        "expected_contains": {
+          "description": "Expected value to be contained in result"
+        },
+        "expected_not_contains": {
+          "description": "Value that should not be in result"
+        },
+        "skip": {
+          "type": "object",
+          "properties": {
+            "python": {
+              "type": "string",
+              "description": "Reason to skip in Python"
+            },
+            "go": {
+              "type": "string",
+              "description": "Reason to skip in Go"
+            }
+          },
+          "description": "Skip conditions for specific languages"
+        }
+      }
+    }
+  }
+}

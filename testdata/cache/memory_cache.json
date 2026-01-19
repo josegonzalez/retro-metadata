@@ -1,0 +1,104 @@
+{
+  "version": "1.0.0",
+  "test_suite": "memory_cache",
+  "description": "Tests for in-memory LRU cache with TTL",
+  "test_cases": [
+    {
+      "id": "set_and_get",
+      "description": "Basic set and get operations",
+      "category": "basic",
+      "operations": [
+        {"action": "set", "key": "key1", "value": {"data": "value1"}},
+        {"action": "get", "key": "key1", "expected": {"data": "value1"}}
+      ]
+    },
+    {
+      "id": "get_missing_key",
+      "description": "Get missing key returns null",
+      "category": "basic",
+      "operations": [
+        {"action": "get", "key": "nonexistent", "expected": null}
+      ]
+    },
+    {
+      "id": "delete",
+      "description": "Delete removes key",
+      "category": "basic",
+      "operations": [
+        {"action": "set", "key": "key1", "value": "value1"},
+        {"action": "delete", "key": "key1"},
+        {"action": "get", "key": "key1", "expected": null}
+      ]
+    },
+    {
+      "id": "clear",
+      "description": "Clear removes all keys",
+      "category": "basic",
+      "operations": [
+        {"action": "set", "key": "key1", "value": "value1"},
+        {"action": "set", "key": "key2", "value": "value2"},
+        {"action": "clear"},
+        {"action": "get", "key": "key1", "expected": null},
+        {"action": "get", "key": "key2", "expected": null}
+      ]
+    },
+    {
+      "id": "overwrite_existing",
+      "description": "Overwrite existing key",
+      "category": "basic",
+      "operations": [
+        {"action": "set", "key": "key1", "value": "value1"},
+        {"action": "set", "key": "key1", "value": "value2"},
+        {"action": "get", "key": "key1", "expected": "value2"}
+      ]
+    },
+    {
+      "id": "ttl_expiration",
+      "description": "Entries expire after TTL",
+      "category": "timing",
+      "config": {
+        "default_ttl_ms": 100
+      },
+      "operations": [
+        {"action": "set", "key": "key1", "value": "value1"},
+        {"action": "get", "key": "key1", "expected": "value1"},
+        {"action": "sleep", "ms": 200},
+        {"action": "get", "key": "key1", "expected": null}
+      ]
+    },
+    {
+      "id": "custom_ttl",
+      "description": "Custom TTL per key",
+      "category": "timing",
+      "config": {
+        "default_ttl_ms": 60000
+      },
+      "operations": [
+        {"action": "set", "key": "key1", "value": "value1", "ttl_ms": 100},
+        {"action": "set", "key": "key2", "value": "value2", "ttl_ms": 60000},
+        {"action": "sleep", "ms": 200},
+        {"action": "get", "key": "key1", "expected": null},
+        {"action": "get", "key": "key2", "expected": "value2"}
+      ]
+    },
+    {
+      "id": "lru_eviction",
+      "description": "LRU eviction when full",
+      "category": "basic",
+      "config": {
+        "max_size": 3
+      },
+      "operations": [
+        {"action": "set", "key": "key1", "value": "value1"},
+        {"action": "set", "key": "key2", "value": "value2"},
+        {"action": "set", "key": "key3", "value": "value3"},
+        {"action": "get", "key": "key1"},
+        {"action": "set", "key": "key4", "value": "value4"},
+        {"action": "get", "key": "key1", "expected_not": null},
+        {"action": "get", "key": "key2", "expected": null},
+        {"action": "get", "key": "key3", "expected_not": null},
+        {"action": "get", "key": "key4", "expected_not": null}
+      ]
+    }
+  ]
+}

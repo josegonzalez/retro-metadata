@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "test_suite": "is_bios_file",
+  "description": "Tests for detecting BIOS files",
+  "test_cases": [
+    {
+      "id": "bios_prefix_brackets",
+      "description": "BIOS prefix in brackets",
+      "category": "basic",
+      "input": "[BIOS] PlayStation.bin",
+      "expected": true
+    },
+    {
+      "id": "bios_prefix_hyphen",
+      "description": "BIOS prefix with hyphen",
+      "category": "basic",
+      "input": "BIOS - PlayStation.bin",
+      "expected": true
+    },
+    {
+      "id": "bios_suffix_brackets",
+      "description": "BIOS tag in brackets at end",
+      "category": "basic",
+      "input": "scph1001.bin [BIOS]",
+      "expected": true
+    },
+    {
+      "id": "bios_in_parens",
+      "description": "BIOS tag in parentheses",
+      "category": "basic",
+      "input": "system.bin (BIOS)",
+      "expected": true
+    },
+    {
+      "id": "not_bios_regular_game",
+      "description": "Regular game is not BIOS",
+      "category": "basic",
+      "input": "Super Mario World (USA).sfc",
+      "expected": false
+    },
+    {
+      "id": "bios_lowercase",
+      "description": "Lowercase bios detection",
+      "category": "basic",
+      "input": "bios_file.bin",
+      "expected": true
+    },
+    {
+      "id": "not_bios_with_bios_substring",
+      "description": "Word containing 'bios' but not a BIOS file",
+      "category": "edge_case",
+      "input": "symbiosis (USA).sfc",
+      "expected": true
+    }
+  ]
+}

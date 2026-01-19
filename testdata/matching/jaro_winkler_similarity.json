@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "test_suite": "jaro_winkler_similarity",
+  "description": "Tests for Jaro-Winkler string similarity calculation",
+  "test_cases": [
+    {
+      "id": "identical_strings",
+      "description": "Identical strings have similarity of 1.0",
+      "category": "basic",
+      "input": {
+        "s1": "test",
+        "s2": "test"
+      },
+      "expected": 1.0
+    },
+    {
+      "id": "completely_different",
+      "description": "Completely different strings have low similarity",
+      "category": "basic",
+      "input": {
+        "s1": "abc",
+        "s2": "xyz"
+      },
+      "expected_max": 0.5
+    },
+    {
+      "id": "similar_strings",
+      "description": "Similar strings have high similarity",
+      "category": "basic",
+      "input": {
+        "s1": "Super Mario World",
+        "s2": "Super Mario World 2"
+      },
+      "expected_min": 0.8
+    },
+    {
+      "id": "empty_both",
+      "description": "Both empty strings have similarity of 1.0",
+      "category": "edge_case",
+      "input": {
+        "s1": "",
+        "s2": ""
+      },
+      "expected": 1.0
+    },
+    {
+      "id": "empty_first",
+      "description": "First string empty returns 0.0",
+      "category": "edge_case",
+      "input": {
+        "s1": "",
+        "s2": "test"
+      },
+      "expected": 0.0
+    },
+    {
+      "id": "empty_second",
+      "description": "Second string empty returns 0.0",
+      "category": "edge_case",
+      "input": {
+        "s1": "test",
+        "s2": ""
+      },
+      "expected": 0.0
+    },
+    {
+      "id": "case_insensitive",
+      "description": "Comparison is case-insensitive",
+      "category": "basic",
+      "input": {
+        "s1": "MARIO",
+        "s2": "mario"
+      },
+      "expected": 1.0
+    },
+    {
+      "id": "typo_similarity",
+      "description": "String with typo has high similarity",
+      "category": "basic",
+      "input": {
+        "s1": "Super Mario Wrld",
+        "s2": "Super Mario World"
+      },
+      "expected_min": 0.9
+    },
+    {
+      "id": "prefix_match",
+      "description": "Strings with matching prefix",
+      "category": "basic",
+      "input": {
+        "s1": "Super Mario Bros",
+        "s2": "Super Mario Kart"
+      },
+      "expected_min": 0.7
+    },
+    {
+      "id": "single_char",
+      "description": "Single character strings",
+      "category": "edge_case",
+      "input": {
+        "s1": "a",
+        "s2": "a"
+      },
+      "expected": 1.0
+    },
+    {
+      "id": "single_char_different",
+      "description": "Different single character strings",
+      "category": "edge_case",
+      "input": {
+        "s1": "a",
+        "s2": "b"
+      },
+      "expected": 0.0
+    }
+  ]
+}

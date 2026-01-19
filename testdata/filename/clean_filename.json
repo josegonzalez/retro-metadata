@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "test_suite": "clean_filename",
+  "description": "Tests for cleaning filenames by removing tags and extensions",
+  "test_cases": [
+    {
+      "id": "basic_cleaning",
+      "description": "Basic filename cleaning with default options",
+      "category": "basic",
+      "input": {
+        "filename": "Super Mario World (USA) [!].sfc",
+        "remove_extension": true
+      },
+      "expected": "Super Mario World"
+    },
+    {
+      "id": "keep_extension",
+      "description": "Keep extension when specified",
+      "category": "basic",
+      "input": {
+        "filename": "Super Mario World (USA).sfc",
+        "remove_extension": false
+      },
+      "expected": "Super Mario World.sfc"
+    },
+    {
+      "id": "multiple_tags",
+      "description": "Remove multiple tags",
+      "category": "basic",
+      "input": {
+        "filename": "Game (USA) (Rev 1) [!] (En,Fr).sfc",
+        "remove_extension": true
+      },
+      "expected": "Game"
+    },
+    {
+      "id": "path_handling",
+      "description": "Handle full file paths",
+      "category": "basic",
+      "input": {
+        "filename": "/path/to/Game (USA).sfc",
+        "remove_extension": true
+      },
+      "expected": "Game"
+    },
+    {
+      "id": "no_tags",
+      "description": "Filename with no tags",
+      "category": "edge_case",
+      "input": {
+        "filename": "game.sfc",
+        "remove_extension": true
+      },
+      "expected": "game"
+    },
+    {
+      "id": "extra_whitespace",
+      "description": "Clean up extra whitespace after tag removal",
+      "category": "edge_case",
+      "input": {
+        "filename": "Game  (USA)   (Rev 1).sfc",
+        "remove_extension": true
+      },
+      "expected": "Game"
+    },
+    {
+      "id": "bios_file",
+      "description": "BIOS file cleaning",
+      "category": "basic",
+      "input": {
+        "filename": "[BIOS] PlayStation (USA).bin",
+        "remove_extension": true
+      },
+      "expected": "PlayStation"
+    }
+  ]
+}
