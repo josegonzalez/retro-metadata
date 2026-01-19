@@ -67,6 +67,16 @@ func (tc *TestCase) ExpectedFloat() (float64, bool) {
 	return f, ok
 }
 
+// ExpectedInt returns the expected value as an int, if it is one.
+// JSON numbers are parsed as float64, so we convert.
+func (tc *TestCase) ExpectedInt() (int, bool) {
+	f, ok := tc.Expected.(float64)
+	if !ok {
+		return 0, false
+	}
+	return int(f), true
+}
+
 // ExpectedBool returns the expected value as a bool, if it is one.
 func (tc *TestCase) ExpectedBool() (bool, bool) {
 	b, ok := tc.Expected.(bool)

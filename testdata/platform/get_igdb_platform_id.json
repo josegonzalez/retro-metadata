@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "test_suite": "get_igdb_platform_id",
+  "description": "Test cases for getting IGDB platform IDs from universal platform slugs",
+  "test_cases": [
+    {
+      "id": "nintendo_snes",
+      "description": "Super Nintendo Entertainment System",
+      "category": "basic",
+      "input": "snes",
+      "expected": 19
+    },
+    {
+      "id": "nintendo_nes",
+      "description": "Nintendo Entertainment System",
+      "category": "basic",
+      "input": "nes",
+      "expected": 18
+    },
+    {
+      "id": "nintendo_n64",
+      "description": "Nintendo 64",
+      "category": "basic",
+      "input": "n64",
+      "expected": 4
+    },
+    {
+      "id": "nintendo_gb",
+      "description": "Game Boy",
+      "category": "basic",
+      "input": "gb",
+      "expected": 33
+    },
+    {
+      "id": "nintendo_gba",
+      "description": "Game Boy Advance",
+      "category": "basic",
+      "input": "gba",
+      "expected": 24
+    },
+    {
+      "id": "nintendo_switch",
+      "description": "Nintendo Switch",
+      "category": "basic",
+      "input": "switch",
+      "expected": 130
+    },
+    {
+      "id": "sega_genesis",
+      "description": "Sega Genesis / Mega Drive",
+      "category": "basic",
+      "input": "genesis",
+      "expected": 29
+    },
+    {
+      "id": "sega_dreamcast",
+      "description": "Sega Dreamcast",
+      "category": "basic",
+      "input": "dc",
+      "expected": 23
+    },
+    {
+      "id": "sony_psx",
+      "description": "PlayStation",
+      "category": "basic",
+      "input": "psx",
+      "expected": 7
+    },
+    {
+      "id": "sony_ps2",
+      "description": "PlayStation 2",
+      "category": "basic",
+      "input": "ps2",
+      "expected": 8
+    },
+    {
+      "id": "arcade",
+      "description": "Arcade",
+      "category": "basic",
+      "input": "arcade",
+      "expected": 52
+    },
+    {
+      "id": "dos",
+      "description": "DOS",
+      "category": "basic",
+      "input": "dos",
+      "expected": 13
+    },
+    {
+      "id": "unknown_slug",
+      "description": "Unknown platform slug returns null",
+      "category": "edge_case",
+      "input": "unknown-platform",
+      "expected": null
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string returns null",
+      "category": "edge_case",
+      "input": "",
+      "expected": null
+    },
+    {
+      "id": "atari_2600",
+      "description": "Atari 2600",
+      "category": "basic",
+      "input": "atari2600",
+      "expected": 59
+    },
+    {
+      "id": "neo_geo_aes",
+      "description": "Neo Geo AES",
+      "category": "basic",
+      "input": "neogeoaes",
+      "expected": 80
+    }
+  ]
+}

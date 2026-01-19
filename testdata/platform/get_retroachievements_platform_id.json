@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "test_suite": "get_retroachievements_platform_id",
+  "description": "Test cases for getting RetroAchievements platform IDs from universal platform slugs",
+  "test_cases": [
+    {
+      "id": "nintendo_snes",
+      "description": "Super Nintendo Entertainment System",
+      "category": "basic",
+      "input": "snes",
+      "expected": 3
+    },
+    {
+      "id": "nintendo_nes",
+      "description": "Nintendo Entertainment System",
+      "category": "basic",
+      "input": "nes",
+      "expected": 7
+    },
+    {
+      "id": "nintendo_n64",
+      "description": "Nintendo 64",
+      "category": "basic",
+      "input": "n64",
+      "expected": 2
+    },
+    {
+      "id": "nintendo_gb",
+      "description": "Game Boy",
+      "category": "basic",
+      "input": "gb",
+      "expected": 4
+    },
+    {
+      "id": "nintendo_gba",
+      "description": "Game Boy Advance",
+      "category": "basic",
+      "input": "gba",
+      "expected": 5
+    },
+    {
+      "id": "nintendo_switch",
+      "description": "Nintendo Switch - not in RetroAchievements",
+      "category": "edge_case",
+      "input": "switch",
+      "expected": null
+    },
+    {
+      "id": "sega_genesis",
+      "description": "Sega Genesis / Mega Drive",
+      "category": "basic",
+      "input": "genesis",
+      "expected": 1
+    },
+    {
+      "id": "sega_dreamcast",
+      "description": "Sega Dreamcast",
+      "category": "basic",
+      "input": "dc",
+      "expected": 40
+    },
+    {
+      "id": "sony_psx",
+      "description": "PlayStation",
+      "category": "basic",
+      "input": "psx",
+      "expected": 12
+    },
+    {
+      "id": "sony_ps2",
+      "description": "PlayStation 2",
+      "category": "basic",
+      "input": "ps2",
+      "expected": 21
+    },
+    {
+      "id": "arcade",
+      "description": "Arcade",
+      "category": "basic",
+      "input": "arcade",
+      "expected": 27
+    },
+    {
+      "id": "dos",
+      "description": "DOS - not in RetroAchievements",
+      "category": "edge_case",
+      "input": "dos",
+      "expected": null
+    },
+    {
+      "id": "unknown_slug",
+      "description": "Unknown platform slug returns null",
+      "category": "edge_case",
+      "input": "unknown-platform",
+      "expected": null
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string returns null",
+      "category": "edge_case",
+      "input": "",
+      "expected": null
+    },
+    {
+      "id": "atari_2600",
+      "description": "Atari 2600",
+      "category": "basic",
+      "input": "atari2600",
+      "expected": 25
+    },
+    {
+      "id": "neo_geo_aes",
+      "description": "Neo Geo AES",
+      "category": "basic",
+      "input": "neogeoaes",
+      "expected": 27
+    }
+  ]
+}

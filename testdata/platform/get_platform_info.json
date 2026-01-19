@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "test_suite": "get_platform_info",
+  "description": "Test cases for getting comprehensive platform information from universal platform slugs",
+  "test_cases": [
+    {
+      "id": "nintendo_snes",
+      "description": "Super Nintendo Entertainment System - has all provider IDs",
+      "category": "basic",
+      "input": "snes",
+      "expected": {
+        "slug": "snes",
+        "igdb_id": 19,
+        "mobygames_id": 15,
+        "screenscraper_id": 4,
+        "retroachievements_id": 3
+      }
+    },
+    {
+      "id": "nintendo_n64",
+      "description": "Nintendo 64 - has all provider IDs",
+      "category": "basic",
+      "input": "n64",
+      "expected": {
+        "slug": "n64",
+        "igdb_id": 4,
+        "mobygames_id": 9,
+        "screenscraper_id": 14,
+        "retroachievements_id": 2
+      }
+    },
+    {
+      "id": "nintendo_switch",
+      "description": "Nintendo Switch - no RetroAchievements ID",
+      "category": "partial",
+      "input": "switch",
+      "expected": {
+        "slug": "switch",
+        "igdb_id": 130,
+        "mobygames_id": 203,
+        "screenscraper_id": 225,
+        "retroachievements_id": null
+      }
+    },
+    {
+      "id": "sega_genesis",
+      "description": "Sega Genesis - has all provider IDs",
+      "category": "basic",
+      "input": "genesis",
+      "expected": {
+        "slug": "genesis",
+        "igdb_id": 29,
+        "mobygames_id": 16,
+        "screenscraper_id": 1,
+        "retroachievements_id": 1
+      }
+    },
+    {
+      "id": "sony_psx",
+      "description": "PlayStation - has all provider IDs",
+      "category": "basic",
+      "input": "psx",
+      "expected": {
+        "slug": "psx",
+        "igdb_id": 7,
+        "mobygames_id": 6,
+        "screenscraper_id": 57,
+        "retroachievements_id": 12
+      }
+    },
+    {
+      "id": "unknown_slug",
+      "description": "Unknown platform slug returns null",
+      "category": "edge_case",
+      "input": "unknown-platform",
+      "expected": null
+    },
+    {
+      "id": "empty_string",
+      "description": "Empty string returns null",
+      "category": "edge_case",
+      "input": "",
+      "expected": null
+    },
+    {
+      "id": "dos",
+      "description": "DOS - no RetroAchievements ID",
+      "category": "partial",
+      "input": "dos",
+      "expected": {
+        "slug": "dos",
+        "igdb_id": 13,
+        "mobygames_id": 2,
+        "screenscraper_id": 135,
+        "retroachievements_id": null
+      }
+    }
+  ]
+}
