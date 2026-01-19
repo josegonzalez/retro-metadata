@@ -171,7 +171,7 @@ func TestMemoryCacheExists(t *testing.T) {
 	}
 
 	// Set key
-	cache.Set(ctx, "key1", "value1", 0)
+	_ = cache.Set(ctx, "key1", "value1", 0)
 
 	// Key exists
 	exists, err = cache.Exists(ctx, "key1")
@@ -193,14 +193,14 @@ func TestMemoryCacheSize(t *testing.T) {
 		t.Errorf("Size = %d, expected 0", cache.Size())
 	}
 
-	cache.Set(ctx, "key1", "value1", 0)
-	cache.Set(ctx, "key2", "value2", 0)
+	_ = cache.Set(ctx, "key1", "value1", 0)
+	_ = cache.Set(ctx, "key2", "value2", 0)
 
 	if cache.Size() != 2 {
 		t.Errorf("Size = %d, expected 2", cache.Size())
 	}
 
-	cache.Delete(ctx, "key1")
+	_, _ = cache.Delete(ctx, "key1")
 
 	if cache.Size() != 1 {
 		t.Errorf("Size = %d, expected 1", cache.Size())
@@ -213,10 +213,10 @@ func TestMemoryCacheStats(t *testing.T) {
 
 	ctx := context.Background()
 
-	cache.Set(ctx, "key1", "value1", 0)
-	cache.Get(ctx, "key1") // hit
-	cache.Get(ctx, "key1") // hit
-	cache.Get(ctx, "key2") // miss
+	_ = cache.Set(ctx, "key1", "value1", 0)
+	_, _ = cache.Get(ctx, "key1") // hit
+	_, _ = cache.Get(ctx, "key1") // hit
+	_, _ = cache.Get(ctx, "key2") // miss
 
 	stats, err := cache.Stats(ctx)
 	if err != nil {
@@ -243,8 +243,8 @@ func TestMemoryCacheGetMany(t *testing.T) {
 
 	ctx := context.Background()
 
-	cache.Set(ctx, "key1", "value1", 0)
-	cache.Set(ctx, "key2", "value2", 0)
+	_ = cache.Set(ctx, "key1", "value1", 0)
+	_ = cache.Set(ctx, "key2", "value2", 0)
 
 	result, err := cache.GetMany(ctx, []string{"key1", "key2", "key3"})
 	if err != nil {
@@ -300,9 +300,9 @@ func TestMemoryCacheDeleteMany(t *testing.T) {
 
 	ctx := context.Background()
 
-	cache.Set(ctx, "key1", "value1", 0)
-	cache.Set(ctx, "key2", "value2", 0)
-	cache.Set(ctx, "key3", "value3", 0)
+	_ = cache.Set(ctx, "key1", "value1", 0)
+	_ = cache.Set(ctx, "key2", "value2", 0)
+	_ = cache.Set(ctx, "key3", "value3", 0)
 
 	count, err := cache.DeleteMany(ctx, []string{"key1", "key2", "nonexistent"})
 	if err != nil {
@@ -329,7 +329,7 @@ func TestMemoryCacheTTLExpiration(t *testing.T) {
 
 	ctx := context.Background()
 
-	cache.Set(ctx, "key1", "value1", 0)
+	_ = cache.Set(ctx, "key1", "value1", 0)
 
 	val, _ := cache.Get(ctx, "key1")
 	if val != "value1" {
@@ -350,15 +350,15 @@ func TestMemoryCacheLRUEviction(t *testing.T) {
 
 	ctx := context.Background()
 
-	cache.Set(ctx, "key1", "value1", 0)
-	cache.Set(ctx, "key2", "value2", 0)
-	cache.Set(ctx, "key3", "value3", 0)
+	_ = cache.Set(ctx, "key1", "value1", 0)
+	_ = cache.Set(ctx, "key2", "value2", 0)
+	_ = cache.Set(ctx, "key3", "value3", 0)
 
 	// Access key1 to make it recently used
-	cache.Get(ctx, "key1")
+	_, _ = cache.Get(ctx, "key1")
 
 	// Add key4, should evict key2 (least recently used)
-	cache.Set(ctx, "key4", "value4", 0)
+	_ = cache.Set(ctx, "key4", "value4", 0)
 
 	// key2 should be evicted
 	val, _ := cache.Get(ctx, "key2")

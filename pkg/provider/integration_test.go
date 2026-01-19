@@ -62,7 +62,7 @@ func TestIGDBSearchIntegration(t *testing.T) {
 		// Handle OAuth token request
 		if strings.Contains(r.URL.Path, "oauth2/token") {
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(map[string]any{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test_token",
 				"expires_in":   3600,
 				"token_type":   "bearer",
@@ -73,7 +73,7 @@ func TestIGDBSearchIntegration(t *testing.T) {
 		// Handle games search
 		if strings.Contains(r.URL.Path, "/games") {
 			w.Header().Set("Content-Type", "application/json")
-			w.Write(searchResponse)
+			_, _ = w.Write(searchResponse)
 			return
 		}
 
@@ -130,7 +130,7 @@ func TestIGDBGetByIDIntegration(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "oauth2/token") {
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(map[string]any{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test_token",
 				"expires_in":   3600,
 				"token_type":   "bearer",
@@ -140,7 +140,7 @@ func TestIGDBGetByIDIntegration(t *testing.T) {
 
 		if strings.Contains(r.URL.Path, "/games") {
 			w.Header().Set("Content-Type", "application/json")
-			w.Write(gameResponse)
+			_, _ = w.Write(gameResponse)
 			return
 		}
 
@@ -210,7 +210,7 @@ func TestMobyGamesSearchIntegration(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/games") {
 			w.Header().Set("Content-Type", "application/json")
-			w.Write(searchResponse)
+			_, _ = w.Write(searchResponse)
 			return
 		}
 
@@ -264,7 +264,7 @@ func TestMobyGamesGetByIDIntegration(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/games/564") {
 			w.Header().Set("Content-Type", "application/json")
-			w.Write(gameResponse)
+			_, _ = w.Write(gameResponse)
 			return
 		}
 
@@ -321,7 +321,7 @@ func TestProviderErrorHandling(t *testing.T) {
 		// For IGDB, we need to handle token request first
 		if strings.Contains(r.URL.Path, "oauth2/token") {
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(map[string]any{
+			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "test_token",
 				"expires_in":   3600,
 				"token_type":   "bearer",
