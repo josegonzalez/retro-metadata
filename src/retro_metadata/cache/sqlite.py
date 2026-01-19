@@ -42,11 +42,11 @@ class SQLiteCache(CacheBackend):
         if self._connection is None:
             try:
                 import aiosqlite
-            except ImportError:
+            except ImportError as e:
                 raise ImportError(
                     "aiosqlite is required for SQLiteCache. "
                     "Install with: pip install retro-metadata[sqlite]"
-                )
+                ) from e
 
             self._connection = await aiosqlite.connect(self._db_path)
             await self._create_table()

@@ -6,6 +6,7 @@ This provider reads from local gamelist.xml files.
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import os
 import re
@@ -13,8 +14,6 @@ from glob import glob
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 from xml.etree import ElementTree as ET
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.providers.base import MetadataProvider
 from retro_metadata.types.common import (
@@ -27,6 +26,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect Gamelist ID tags (UUID format typically)
 GAMELIST_TAG_REGEX: Final = re.compile(r"\(gamelist-([a-f0-9-]+)\)", re.IGNORECASE)
@@ -85,8 +86,8 @@ class GamelistProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         roms_path: str | Path | None = None,
     ) -> None:
         super().__init__(config, cache)
@@ -199,7 +200,7 @@ class GamelistProvider(MetadataProvider):
     async def search(
         self,
         query: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
         limit: int = 20,
     ) -> list[SearchResult]:
         """Search for games by name.
@@ -265,7 +266,7 @@ class GamelistProvider(MetadataProvider):
     async def identify(
         self,
         filename: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
     ) -> GameResult | None:
         """Identify a game from a ROM filename.
 
@@ -330,10 +331,8 @@ class GamelistProvider(MetadataProvider):
         total_rating = None
         rating = game.get("rating")
         if rating:
-            try:
+            with contextlib.suppress(ValueError):
                 total_rating = float(rating) * 100
-            except ValueError:
-                pass
 
         # Release date
         first_release_date = None

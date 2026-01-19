@@ -10,6 +10,25 @@ from typing import TYPE_CHECKING, Any, Final
 
 import httpx
 
+from retro_metadata.core.exceptions import (
+    ProviderAuthenticationError,
+    ProviderConnectionError,
+    ProviderRateLimitError,
+)
+from retro_metadata.providers.base import MetadataProvider
+from retro_metadata.types.common import (
+    Artwork,
+    GameMetadata,
+    GameResult,
+    SearchResult,
+)
+
+if TYPE_CHECKING:
+    from retro_metadata.cache.base import CacheBackend
+    from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
+
 
 class SGDBDimension(StrEnum):
     """SteamGridDB grid dimension options."""
@@ -63,25 +82,6 @@ class SGDBMime(StrEnum):
     WEBP = "image/webp"
     ICO = "image/vnd.microsoft.icon"
 
-logger = logging.getLogger(__name__)
-
-from retro_metadata.core.exceptions import (
-    ProviderAuthenticationError,
-    ProviderConnectionError,
-    ProviderRateLimitError,
-)
-from retro_metadata.providers.base import MetadataProvider
-from retro_metadata.types.common import (
-    Artwork,
-    GameMetadata,
-    GameResult,
-    SearchResult,
-)
-
-if TYPE_CHECKING:
-    from retro_metadata.cache.base import CacheBackend
-    from retro_metadata.core.config import ProviderConfig
-
 # Regex to detect SteamGridDB ID tags in filenames like (sgdb-12345)
 SGDB_TAG_REGEX: Final = re.compile(r"\(sgdb-(\d+)\)", re.IGNORECASE)
 
@@ -107,8 +107,8 @@ class SteamGridDBProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -176,7 +176,7 @@ class SteamGridDBProvider(MetadataProvider):
     async def search(
         self,
         query: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
         limit: int = 10,
     ) -> list[SearchResult]:
         """Search for games by name.
@@ -377,7 +377,7 @@ class SteamGridDBProvider(MetadataProvider):
     async def identify(
         self,
         filename: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
     ) -> GameResult | None:
         """Identify a game from a ROM filename.
 

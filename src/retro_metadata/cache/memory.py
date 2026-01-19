@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import time
 from collections import OrderedDict
 from dataclasses import dataclass
@@ -174,10 +175,8 @@ class MemoryCache(CacheBackend):
         """Cancel the cleanup task and clear the cache."""
         if self._cleanup_task is not None:
             self._cleanup_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._cleanup_task
-            except asyncio.CancelledError:
-                pass
             self._cleanup_task = None
         await self.clear()
 

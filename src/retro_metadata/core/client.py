@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import contextlib
 import logging
-from typing import TYPE_CHECKING, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import TYPE_CHECKING
 
 from retro_metadata.cache.base import CacheBackend, NullCache
-
-logger = logging.getLogger(__name__)
 from retro_metadata.cache.memory import MemoryCache
 from retro_metadata.core.config import MetadataConfig
 from retro_metadata.core.exceptions import ProviderNotFoundError
@@ -22,6 +22,8 @@ from retro_metadata.types.common import GameResult, SearchResult
 
 if TYPE_CHECKING:
     from retro_metadata.platforms.slugs import UniversalPlatformSlug
+
+logger = logging.getLogger(__name__)
 
 
 class MetadataClient:
@@ -71,7 +73,7 @@ class MetadataClient:
         self._providers: dict[str, MetadataProvider] = {}
         self._initialized = False
 
-    async def __aenter__(self) -> "MetadataClient":
+    async def __aenter__(self) -> MetadataClient:
         """Async context manager entry."""
         await self._initialize()
         return self
@@ -96,6 +98,7 @@ class MetadataClient:
             elif cache_config.backend == "redis":
                 try:
                     from redis.asyncio import Redis
+
                     from retro_metadata.cache.redis import RedisCache
                     client = Redis.from_url(cache_config.connection_string)
                     self._cache = RedisCache(client, default_ttl=cache_config.ttl)
@@ -255,7 +258,7 @@ class MetadataClient:
         """
         return list(self._providers.keys())
 
-    def _get_platform_id(self, provider: str, platform: str | "UniversalPlatformSlug") -> int | None:
+    def _get_platform_id(self, provider: str, platform: str | UniversalPlatformSlug) -> int | None:
         """Get provider-specific platform ID from universal slug.
 
         Args:
@@ -279,7 +282,7 @@ class MetadataClient:
     async def search(
         self,
         query: str,
-        platform: str | "UniversalPlatformSlug" | None = None,
+        platform: str | UniversalPlatformSlug | None = None,
         providers: list[str] | None = None,
         limit: int = 10,
     ) -> list[SearchResult]:
@@ -344,7 +347,7 @@ class MetadataClient:
     async def search_all(
         self,
         query: str,
-        platform: str | "UniversalPlatformSlug" | None = None,
+        platform: str | UniversalPlatformSlug | None = None,
         limit: int = 10,
     ) -> AsyncIterator[SearchResult]:
         """Search for games across all providers, yielding results as they arrive.
@@ -373,7 +376,7 @@ class MetadataClient:
     async def identify(
         self,
         filename: str,
-        platform: str | "UniversalPlatformSlug",
+        platform: str | UniversalPlatformSlug,
         providers: list[str] | None = None,
     ) -> GameResult | None:
         """Identify a game from a ROM filename.
@@ -483,7 +486,7 @@ class MetadataClient:
 
     async def identify_by_hash(
         self,
-        platform: str | "UniversalPlatformSlug",
+        platform: str | UniversalPlatformSlug,
         md5: str | None = None,
         sha1: str | None = None,
         crc: str | None = None,
@@ -623,7 +626,7 @@ class MetadataClient:
     async def identify_smart(
         self,
         filename: str,
-        platform: str | "UniversalPlatformSlug",
+        platform: str | UniversalPlatformSlug,
         md5: str | None = None,
         sha1: str | None = None,
         crc: str | None = None,
@@ -800,16 +803,12 @@ class MetadataClient:
     async def close(self) -> None:
         """Close all provider connections and clean up resources."""
         for provider in self._providers.values():
-            try:
+            with contextlib.suppress(Exception):
                 await provider.close()
-            except Exception:
-                pass
 
         if self._cache is not None:
-            try:
+            with contextlib.suppress(Exception):
                 await self._cache.close()
-            except Exception:
-                pass
 
         self._providers.clear()
         self._initialized = False

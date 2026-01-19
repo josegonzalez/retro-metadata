@@ -8,17 +8,16 @@ from __future__ import annotations
 import enum
 from typing import Literal, NewType, TypedDict, TypeGuard
 
-
 # Type for expandable fields - can be an ID or the full object
 type ExpandableField[T] = T | int
 
 
-def mark_expanded[T](value: ExpandableField[T]) -> TypeGuard[T]:
+def mark_expanded[T](value: ExpandableField[T]) -> TypeGuard[T]:  # noqa: ARG001
     """Type guard to narrow an `ExpandableField` to its expanded type."""
     return True
 
 
-def mark_list_expanded[T](value: list[ExpandableField[T]]) -> TypeGuard[list[T]]:
+def mark_list_expanded[T](value: list[ExpandableField[T]]) -> TypeGuard[list[T]]:  # noqa: ARG001
     """Type guard to narrow an `ExpandableField` list to its expanded type."""
     return True
 
@@ -124,7 +123,7 @@ class AlternativeName(IGDBEntity, total=False):
 
     checksum: str
     comment: str
-    game: ExpandableField["Game"]
+    game: ExpandableField[Game]
     name: str
 
 
@@ -135,10 +134,10 @@ class Collection(IGDBEntity, total=False):
     as_parent_relations: list[ExpandableField[CollectionRelation]]
     checksum: str
     created_at: int
-    games: list[ExpandableField["Game"]]
+    games: list[ExpandableField[Game]]
     name: str
     slug: str
-    type: ExpandableField["CollectionType"]
+    type: ExpandableField[CollectionType]
     updated_at: int
     url: str
 
@@ -157,23 +156,23 @@ class Company(IGDBEntity, total=False):
     """IGDB company."""
 
     change_date: int
-    change_date_category: "CompanyChangeDateCategory"
-    changed_company_id: ExpandableField["Company"]
+    change_date_category: CompanyChangeDateCategory
+    changed_company_id: ExpandableField[Company]
     checksum: str
     country: int
     created_at: int
     description: str
-    developed: list[ExpandableField["Game"]]
-    logo: ExpandableField["CompanyLogo"]
+    developed: list[ExpandableField[Game]]
+    logo: ExpandableField[CompanyLogo]
     name: str
-    parent: ExpandableField["Company"]
-    published: list[ExpandableField["Game"]]
+    parent: ExpandableField[Company]
+    published: list[ExpandableField[Game]]
     slug: str
     start_date: int
-    start_date_category: "CompanyStartDateCategory"
+    start_date_category: CompanyStartDateCategory
     updated_at: int
     url: str
-    websites: list[ExpandableField["CompanyWebsite"]]
+    websites: list[ExpandableField[CompanyWebsite]]
 
 
 class CompanyChangeDateCategory(enum.IntEnum):
@@ -217,7 +216,7 @@ class CompanyStartDateCategory(enum.IntEnum):
 class CompanyWebsite(IGDBEntity, total=False):
     """IGDB company website."""
 
-    category: "CompanyWebsiteCategory"
+    category: CompanyWebsiteCategory
     checksum: str
     trusted: bool
     url: str
@@ -251,8 +250,8 @@ class Cover(IGDBEntity, total=False):
     alpha_channel: bool
     animated: bool
     checksum: str
-    game: ExpandableField["Game"]
-    game_localization: ExpandableField["GameLocalization"]
+    game: ExpandableField[Game]
+    game_localization: ExpandableField[GameLocalization]
     height: int
     image_id: str
     url: str
@@ -264,7 +263,7 @@ class Franchise(IGDBEntity, total=False):
 
     checksum: str
     created_at: int
-    games: list[ExpandableField["Game"]]
+    games: list[ExpandableField[Game]]
     name: str
     slug: str
     updated_at: int
@@ -312,43 +311,43 @@ class Game(IGDBEntity, total=False):
     aggregated_rating_count: int
     alternative_names: list[ExpandableField[AlternativeName]]
     artworks: list[ExpandableField[Artwork]]
-    bundles: list[ExpandableField["Game"]]
+    bundles: list[ExpandableField[Game]]
     category: GameType
     checksum: str
     collections: list[ExpandableField[Collection]]
     cover: ExpandableField[Cover]
     created_at: int
-    dlcs: list[ExpandableField["Game"]]
-    expanded_games: list[ExpandableField["Game"]]
-    expansions: list[ExpandableField["Game"]]
+    dlcs: list[ExpandableField[Game]]
+    expanded_games: list[ExpandableField[Game]]
+    expansions: list[ExpandableField[Game]]
     external_games: list[ExpandableField[ExternalGame]]
     first_release_date: int
-    forks: list[ExpandableField["Game"]]
+    forks: list[ExpandableField[Game]]
     franchise: ExpandableField[Franchise]
     franchises: list[ExpandableField[Franchise]]
     game_engines: list[ExpandableField[GameEngine]]
-    game_localizations: list[ExpandableField["GameLocalization"]]
+    game_localizations: list[ExpandableField[GameLocalization]]
     game_modes: list[ExpandableField[GameMode]]
-    genres: list[ExpandableField["Genre"]]
+    genres: list[ExpandableField[Genre]]
     hypes: int
     involved_companies: list[ExpandableField[InvolvedCompany]]
     keywords: list[ExpandableField[Keyword]]
     language_supports: list[ExpandableField[LanguageSupport]]
-    multiplayer_modes: list[ExpandableField["MultiplayerMode"]]
+    multiplayer_modes: list[ExpandableField[MultiplayerMode]]
     name: str
-    parent_game: ExpandableField["Game"]
-    platforms: list[ExpandableField["Platform"]]
+    parent_game: ExpandableField[Game]
+    platforms: list[ExpandableField[Platform]]
     player_perspectives: list[ExpandableField[PlayerPerspective]]
-    ports: list[ExpandableField["Game"]]
+    ports: list[ExpandableField[Game]]
     rating: float
     rating_count: int
     release_dates: list[ExpandableField[ReleaseDate]]
-    remakes: list[ExpandableField["Game"]]
-    remasters: list[ExpandableField["Game"]]
-    screenshots: list[ExpandableField["Screenshot"]]
-    similar_games: list[ExpandableField["Game"]]
+    remakes: list[ExpandableField[Game]]
+    remasters: list[ExpandableField[Game]]
+    screenshots: list[ExpandableField[Screenshot]]
+    similar_games: list[ExpandableField[Game]]
     slug: str
-    standalone_expansions: list[ExpandableField["Game"]]
+    standalone_expansions: list[ExpandableField[Game]]
     status: GameStatus
     storyline: str
     summary: str
@@ -358,9 +357,9 @@ class Game(IGDBEntity, total=False):
     total_rating_count: int
     updated_at: int
     url: str
-    version_parent: ExpandableField["Game"]
+    version_parent: ExpandableField[Game]
     version_title: str
-    videos: list[ExpandableField["GameVideo"]]
+    videos: list[ExpandableField[GameVideo]]
     websites: list[ExpandableField[Website]]
 
 
@@ -372,7 +371,7 @@ class GameLocalization(IGDBEntity, total=False):
     created_at: int
     game: ExpandableField[Game]
     name: str
-    region: ExpandableField["Region"]
+    region: ExpandableField[Region]
     updated_at: int
 
 
@@ -423,7 +422,7 @@ class MultiplayerMode(IGDBEntity, total=False):
     onlinecoop: bool
     onlinecoopmax: int
     onlinemax: int
-    platform: ExpandableField["Platform"]
+    platform: ExpandableField[Platform]
     splitscreen: bool
     splitscreenonline: bool
 
@@ -449,13 +448,13 @@ class Platform(IGDBEntity, total=False):
     created_at: int
     generation: int
     name: str
-    platform_family: ExpandableField["PlatformFamily"]
-    platform_logo: ExpandableField["PlatformLogo"]
+    platform_family: ExpandableField[PlatformFamily]
+    platform_logo: ExpandableField[PlatformLogo]
     slug: str
     summary: str
     updated_at: int
     url: str
-    versions: list[ExpandableField["PlatformVersion"]]
+    versions: list[ExpandableField[PlatformVersion]]
     websites: list[ExpandableField[PlatformWebsite]]
 
 
@@ -483,11 +482,11 @@ class PlatformVersion(IGDBEntity, total=False):
     """IGDB platform version."""
 
     checksum: str
-    companies: list[ExpandableField["PlatformVersionCompany"]]
+    companies: list[ExpandableField[PlatformVersionCompany]]
     connectivity: str
     cpu: str
     graphics: str
-    main_manufacturer: ExpandableField["PlatformVersionCompany"]
+    main_manufacturer: ExpandableField[PlatformVersionCompany]
     media: str
     memory: str
     name: str

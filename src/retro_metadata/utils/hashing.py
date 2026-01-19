@@ -5,7 +5,6 @@ from __future__ import annotations
 import hashlib
 import zlib
 from pathlib import Path
-from typing import BinaryIO
 
 
 def compute_crc32(file_path: str | Path, chunk_size: int = 65536) -> str:

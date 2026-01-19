@@ -9,7 +9,6 @@ from retro_metadata.platforms.mappings import (
     get_retroachievements_platform_id,
     get_screenscraper_platform_id,
 )
-
 from tests.helpers.test_data_loader import pytest_generate_tests_from_data
 
 

@@ -3,7 +3,6 @@
 import pytest
 
 from retro_metadata.core.normalization import normalize_search_term
-
 from tests.helpers.test_data_loader import pytest_generate_tests_from_data
 
 

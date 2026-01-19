@@ -5,13 +5,12 @@ from __future__ import annotations
 import asyncio
 import logging
 import shutil
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.artwork.cache import ArtworkCache, CachedArtwork
 from retro_metadata.artwork.config import ARTWORK_TYPES, ArtworkConfig
@@ -33,6 +32,7 @@ if TYPE_CHECKING:
     from retro_metadata.core.client import MetadataClient
     from retro_metadata.types.common import Artwork, GameResult
 
+logger = logging.getLogger(__name__)
 
 # Common ROM extensions by platform
 ROM_EXTENSIONS: dict[str, list[str]] = {
@@ -148,7 +148,7 @@ class ArtworkDownloader:
 
     def __init__(
         self,
-        client: "MetadataClient",
+        client: MetadataClient,
         config: ArtworkConfig | None = None,
     ) -> None:
         """Initialize the artwork downloader.
@@ -163,7 +163,7 @@ class ArtworkDownloader:
         self._http_client: httpx.AsyncClient | None = None
         self._semaphore: asyncio.Semaphore | None = None
 
-    async def __aenter__(self) -> "ArtworkDownloader":
+    async def __aenter__(self) -> ArtworkDownloader:
         """Async context manager entry."""
         return self
 
@@ -225,7 +225,7 @@ class ArtworkDownloader:
 
     def _get_artwork_url(
         self,
-        artwork: "Artwork",
+        artwork: Artwork,
         artwork_type: str,
         index: int = 0,
     ) -> str | None:
@@ -300,21 +300,21 @@ class ArtworkDownloader:
             )
             return response.content, content_type
 
-        except httpx.TimeoutException:
+        except httpx.TimeoutException as e:
             logger.debug("Download timed out after %ds: %s", self.config.timeout, url)
-            raise ArtworkTimeoutError(url, self.config.timeout)
+            raise ArtworkTimeoutError(url, self.config.timeout) from e
         except httpx.HTTPStatusError as e:
             logger.debug("HTTP error %d for URL: %s", e.response.status_code, url)
             raise ArtworkDownloadError(
                 url, provider, f"HTTP {e.response.status_code}"
-            )
+            ) from e
         except httpx.RequestError as e:
             logger.debug("Request error for URL %s: %s", url, e)
-            raise ArtworkDownloadError(url, provider, str(e))
+            raise ArtworkDownloadError(url, provider, str(e)) from e
 
     async def download_for_game(
         self,
-        game: "GameResult",
+        game: GameResult,
         output_dir: Path,
         rom_filename: str | None = None,
         artwork_types: list[str] | None = None,

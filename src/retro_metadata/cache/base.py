@@ -116,6 +116,7 @@ class CacheBackend(abc.ABC):
         Default implementation does nothing.
         Backends with connections should override.
         """
+        return  # noqa: B027
 
 
 class NullCache(CacheBackend):
@@ -124,16 +125,16 @@ class NullCache(CacheBackend):
     Useful for testing or disabling caching.
     """
 
-    async def get(self, key: str) -> Any | None:
+    async def get(self, _key: str) -> Any | None:
         return None
 
-    async def set(self, key: str, value: Any, ttl: int | None = None) -> None:
+    async def set(self, _key: str, _value: Any, _ttl: int | None = None) -> None:
         pass
 
-    async def delete(self, key: str) -> bool:
+    async def delete(self, _key: str) -> bool:
         return False
 
-    async def exists(self, key: str) -> bool:
+    async def exists(self, _key: str) -> bool:
         return False
 
     async def clear(self) -> None:

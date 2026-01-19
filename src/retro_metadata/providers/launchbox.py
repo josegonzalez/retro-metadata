@@ -14,8 +14,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final
 from xml.etree import ElementTree as ET
 
-logger = logging.getLogger(__name__)
-
 from retro_metadata.platforms.slugs import UniversalPlatformSlug as UPS
 from retro_metadata.providers.base import MetadataProvider
 from retro_metadata.types.common import (
@@ -30,6 +28,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect LaunchBox ID tags in filenames like (launchbox-12345)
 LAUNCHBOX_TAG_REGEX: Final = re.compile(r"\(launchbox-(\d+)\)", re.IGNORECASE)
@@ -80,8 +80,8 @@ class LaunchBoxProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         metadata_path: str | Path | None = None,
     ) -> None:
         super().__init__(config, cache)
@@ -168,7 +168,7 @@ class LaunchBoxProvider(MetadataProvider):
 
     def _get_platform_id_by_name(self, platform_name: str) -> int | None:
         """Get LaunchBox platform ID by platform name."""
-        for ups, info in LAUNCHBOX_PLATFORM_MAP.items():
+        for _ups, info in LAUNCHBOX_PLATFORM_MAP.items():
             if info["name"] == platform_name:
                 return info["id"]
         return None
@@ -371,7 +371,7 @@ class LaunchBoxProvider(MetadataProvider):
             raw_response=game,
         )
 
-    def _extract_metadata(self, game: dict[str, Any], game_id: int) -> GameMetadata:
+    def _extract_metadata(self, game: dict[str, Any], game_id: int) -> GameMetadata:  # noqa: ARG002
         """Extract GameMetadata from LaunchBox game data."""
         # Extract release date
         first_release_date = None

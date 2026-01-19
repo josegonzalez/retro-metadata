@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import re
@@ -9,8 +10,6 @@ from typing import TYPE_CHECKING, Any, Final
 from urllib.parse import quote
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderAuthenticationError,
@@ -31,6 +30,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect MobyGames ID tags in filenames like (moby-12345)
 MOBYGAMES_TAG_REGEX: Final = re.compile(r"\(moby-(\d+)\)", re.IGNORECASE)
@@ -71,8 +72,8 @@ class MobyGamesProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -182,10 +183,8 @@ class MobyGamesProvider(MetadataProvider):
             if "platforms" in game and game["platforms"]:
                 first_date = game["platforms"][0].get("first_release_date", "")
                 if first_date:
-                    try:
+                    with contextlib.suppress(ValueError, IndexError):
                         release_year = int(first_date[:4])
-                    except (ValueError, IndexError):
-                        pass
 
             search_results.append(SearchResult(
                 name=game.get("title", ""),
@@ -274,12 +273,11 @@ class MobyGamesProvider(MetadataProvider):
 
         # Try MAME format for arcade platform
         # MobyGames platform ID: Arcade=143
-        if platform_id == 143 and not search_term:
-            if self._is_mame_format(filename):
-                # For MAME, use the filename directly (without extension)
-                mame_name = re.sub(r"\.[^.]+$", "", filename)
-                logger.debug("MobyGames: Searching by MAME ROM name: %s", mame_name)
-                search_term = mame_name
+        if platform_id == 143 and not search_term and self._is_mame_format(filename):
+            # For MAME, use the filename directly (without extension)
+            mame_name = re.sub(r"\.[^.]+$", "", filename)
+            logger.debug("MobyGames: Searching by MAME ROM name: %s", mame_name)
+            search_term = mame_name
 
         # Fall back to cleaned filename if no special format detected
         if not search_term:
@@ -460,10 +458,8 @@ class MobyGamesProvider(MetadataProvider):
         total_rating = None
         if "moby_score" in game and game["moby_score"]:
             # MobyGames scores are out of 10, convert to 100
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 total_rating = float(game["moby_score"]) * 10
-            except (ValueError, TypeError):
-                pass
 
         return GameMetadata(
             total_rating=total_rating,

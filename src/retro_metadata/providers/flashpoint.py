@@ -5,6 +5,7 @@ Flashpoint Archive is a preservation project for Flash games and browser-based c
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import re
@@ -12,8 +13,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Final
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderConnectionError,
@@ -31,6 +30,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect Flashpoint ID tags in filenames (UUID format)
 FLASHPOINT_TAG_REGEX: Final = re.compile(
@@ -68,8 +69,8 @@ class FlashpointProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -117,7 +118,7 @@ class FlashpointProvider(MetadataProvider):
     async def search(
         self,
         query: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
         limit: int = 30,
     ) -> list[SearchResult]:
         """Search for games by name.
@@ -155,10 +156,8 @@ class FlashpointProvider(MetadataProvider):
             release_year = None
             release_date = game.get("releaseDate", "")
             if release_date:
-                try:
+                with contextlib.suppress(ValueError, IndexError):
                     release_year = int(release_date[:4])
-                except (ValueError, IndexError):
-                    pass
 
             search_results.append(
                 SearchResult(
@@ -205,7 +204,7 @@ class FlashpointProvider(MetadataProvider):
     async def identify(
         self,
         filename: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
     ) -> GameResult | None:
         """Identify a game from a filename.
 

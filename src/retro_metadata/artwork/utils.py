@@ -78,12 +78,11 @@ def get_image_dimensions(data: bytes) -> tuple[int, int] | None:
         return None
 
     # PNG: Check magic bytes and parse IHDR chunk
-    if data[:8] == b"\x89PNG\r\n\x1a\n":
-        # IHDR chunk starts at byte 8, width at byte 16, height at byte 20
-        if len(data) >= 24:
-            width = struct.unpack(">I", data[16:20])[0]
-            height = struct.unpack(">I", data[20:24])[0]
-            return (width, height)
+    # IHDR chunk starts at byte 8, width at byte 16, height at byte 20
+    if data[:8] == b"\x89PNG\r\n\x1a\n" and len(data) >= 24:
+        width = struct.unpack(">I", data[16:20])[0]
+        height = struct.unpack(">I", data[20:24])[0]
+        return (width, height)
 
     # JPEG: Parse SOF0 marker for dimensions
     if data[:2] == b"\xff\xd8":

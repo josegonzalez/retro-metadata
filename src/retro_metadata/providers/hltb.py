@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import re
 from typing import TYPE_CHECKING, Any, Final
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderConnectionError,
@@ -27,6 +26,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect HLTB ID tags in filenames like (hltb-12345)
 HLTB_TAG_REGEX: Final = re.compile(r"\(hltb-(\d+)\)", re.IGNORECASE)
@@ -58,8 +59,8 @@ class HLTBProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -179,7 +180,7 @@ class HLTBProvider(MetadataProvider):
     async def search(
         self,
         query: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
         limit: int = 20,
     ) -> list[SearchResult]:
         """Search for games by name.
@@ -235,10 +236,8 @@ class HLTBProvider(MetadataProvider):
 
             release_year = None
             if game.get("release_world"):
-                try:
+                with contextlib.suppress(ValueError):
                     release_year = int(game["release_world"])
-                except ValueError:
-                    pass
 
             search_results.append(
                 SearchResult(
@@ -300,7 +299,7 @@ class HLTBProvider(MetadataProvider):
     async def identify(
         self,
         filename: str,
-        platform_id: int | None = None,
+        platform_id: int | None = None,  # noqa: ARG002
     ) -> GameResult | None:
         """Identify a game from a ROM filename.
 
@@ -399,10 +398,8 @@ class HLTBProvider(MetadataProvider):
         # Release year
         release_year = None
         if game.get("release_world"):
-            try:
+            with contextlib.suppress(ValueError):
                 release_year = int(game["release_world"])
-            except ValueError:
-                pass
 
         # Game modes from completion times
         game_modes = []
@@ -423,10 +420,8 @@ class HLTBProvider(MetadataProvider):
         total_rating = None
         review_score = game.get("review_score")
         if review_score is not None:
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 total_rating = float(review_score)
-            except (ValueError, TypeError):
-                pass
 
         return GameMetadata(
             release_year=release_year,

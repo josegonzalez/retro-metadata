@@ -12,7 +12,6 @@ from retro_metadata.utils.filename import (
     is_unlicensed,
     parse_no_intro_filename,
 )
-
 from tests.helpers.test_data_loader import pytest_generate_tests_from_data
 
 

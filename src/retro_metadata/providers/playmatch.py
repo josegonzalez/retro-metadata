@@ -5,14 +5,13 @@ Playmatch is a service for matching ROMs by hash to external metadata providers.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderConnectionError,
@@ -26,6 +25,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 
 class GameMatchType(str, Enum):
@@ -62,8 +63,8 @@ class PlaymatchProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -112,9 +113,9 @@ class PlaymatchProvider(MetadataProvider):
 
     async def search(
         self,
-        query: str,
-        platform_id: int | None = None,
-        limit: int = 20,
+        query: str,  # noqa: ARG002
+        platform_id: int | None = None,  # noqa: ARG002
+        limit: int = 20,  # noqa: ARG002
     ) -> list[SearchResult]:
         """Search for games by name.
 
@@ -130,7 +131,7 @@ class PlaymatchProvider(MetadataProvider):
         """
         return []
 
-    async def get_by_id(self, game_id: int) -> GameResult | None:
+    async def get_by_id(self, game_id: int) -> GameResult | None:  # noqa: ARG002
         """Get game details by ID.
 
         Note: Playmatch doesn't support ID lookups. Use the returned provider
@@ -146,8 +147,8 @@ class PlaymatchProvider(MetadataProvider):
 
     async def identify(
         self,
-        filename: str,
-        platform_id: int | None = None,
+        filename: str,  # noqa: ARG002
+        platform_id: int | None = None,  # noqa: ARG002
     ) -> GameResult | None:
         """Identify a game from a ROM filename.
 
@@ -216,10 +217,8 @@ class PlaymatchProvider(MetadataProvider):
             if metadata.get("providerName") == "IGDB":
                 provider_id = metadata.get("providerId")
                 if provider_id:
-                    try:
+                    with contextlib.suppress(ValueError):
                         igdb_id = int(provider_id)
-                    except ValueError:
-                        pass
                 break
 
         return {

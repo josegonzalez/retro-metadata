@@ -7,7 +7,6 @@ from retro_metadata.core.matching import (
     jaro_winkler_similarity,
 )
 from retro_metadata.core.normalization import split_search_term
-
 from tests.helpers.test_data_loader import pytest_generate_tests_from_data
 
 

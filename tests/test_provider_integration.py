@@ -206,7 +206,7 @@ class TestProviderErrorHandling:
             provider = IGDBProvider(igdb_config)
 
             try:
-                with pytest.raises(Exception):
+                with pytest.raises(Exception):  # noqa: B017
                     await provider.search("Test", limit=10)
             finally:
                 await provider.close()
@@ -222,7 +222,7 @@ class TestProviderErrorHandling:
         provider = MobyGamesProvider(mobygames_config)
 
         try:
-            with pytest.raises(Exception):
+            with pytest.raises(Exception):  # noqa: B017
                 await provider.search("Test", limit=10)
         finally:
             await provider.close()

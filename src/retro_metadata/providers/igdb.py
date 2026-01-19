@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import re
@@ -10,8 +11,6 @@ from typing import TYPE_CHECKING, Any, Final
 import aiohttp
 import yarl
 from aiohttp.client import ClientTimeout
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderAuthenticationError,
@@ -26,7 +25,6 @@ from retro_metadata.types.common import (
     Artwork,
     GameMetadata,
     GameResult,
-    MultiplayerMode,
     Platform,
     RelatedGame,
     SearchResult,
@@ -34,11 +32,13 @@ from retro_metadata.types.common import (
 
 # Forward declaration for age rating functions used below
 # The actual mappings are defined at module level after the class
-from retro_metadata.types.igdb import Game, GameType
+from retro_metadata.types.igdb import GameType
 
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect IGDB ID tags in filenames like (igdb-12345)
 IGDB_TAG_REGEX: Final = re.compile(r"\(igdb-(\d+)\)", re.IGNORECASE)
@@ -128,8 +128,8 @@ class IGDBProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -304,10 +304,8 @@ class IGDBProvider(MetadataProvider):
             release_year = None
             if "first_release_date" in game:
                 from datetime import datetime
-                try:
+                with contextlib.suppress(ValueError, OSError):
                     release_year = datetime.fromtimestamp(game["first_release_date"]).year
-                except (ValueError, OSError):
-                    pass
 
             search_results.append(SearchResult(
                 name=game.get("name", ""),

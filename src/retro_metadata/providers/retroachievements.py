@@ -5,13 +5,11 @@ from __future__ import annotations
 import json
 import logging
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Final
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderAuthenticationError,
@@ -31,6 +29,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect RetroAchievements ID tags in filenames like (ra-12345)
 RA_TAG_REGEX: Final = re.compile(r"\(ra-(\d+)\)", re.IGNORECASE)
@@ -73,7 +73,7 @@ class RAGameAchievement:
     display_order: int = 0
 
     @classmethod
-    def from_api_data(cls, data: dict[str, Any]) -> "RAGameAchievement":
+    def from_api_data(cls, data: dict[str, Any]) -> RAGameAchievement:
         """Create RAGameAchievement from API response data."""
         badge_id = str(data.get("BadgeName", ""))
         badge_url = f"{RA_BADGE_URL}/{badge_id}.png" if badge_id else ""
@@ -112,8 +112,8 @@ class RetroAchievementsProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)

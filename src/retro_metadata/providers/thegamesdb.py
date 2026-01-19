@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import re
 from typing import TYPE_CHECKING, Any, Final
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 from retro_metadata.core.exceptions import (
     ProviderAuthenticationError,
@@ -29,6 +28,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect TheGamesDB ID tags in filenames like (tgdb-12345)
 TGDB_TAG_REGEX: Final = re.compile(r"\(tgdb-(\d+)\)", re.IGNORECASE)
@@ -52,8 +53,8 @@ class TheGamesDBProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
     ) -> None:
         super().__init__(config, cache)
@@ -177,10 +178,8 @@ class TheGamesDBProvider(MetadataProvider):
             release_year = None
             release_date = game.get("release_date")
             if release_date:
-                try:
+                with contextlib.suppress(ValueError, IndexError):
                     release_year = int(release_date[:4])
-                except (ValueError, IndexError):
-                    pass
 
             search_results.append(
                 SearchResult(
@@ -363,10 +362,8 @@ class TheGamesDBProvider(MetadataProvider):
         release_year = None
         release_date = game.get("release_date")
         if release_date:
-            try:
+            with contextlib.suppress(ValueError, IndexError):
                 release_year = int(release_date[:4])
-            except (ValueError, IndexError):
-                pass
 
         # Genres
         genres = game.get("genres", [])

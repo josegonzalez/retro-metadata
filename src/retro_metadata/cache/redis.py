@@ -33,7 +33,7 @@ class RedisCache(CacheBackend):
 
     def __init__(
         self,
-        client: "Redis",
+        client: Redis,
         default_ttl: int = 3600,
         prefix: str = "retro_metadata:",
     ) -> None:
@@ -141,7 +141,7 @@ class RedisCache(CacheBackend):
         values = await self._client.mget(prefixed_keys)
 
         result = {}
-        for key, value in zip(keys, values):
+        for key, value in zip(keys, values, strict=False):
             if value is not None:
                 result[key] = self._deserialize(value)
         return result

@@ -12,8 +12,6 @@ from typing import TYPE_CHECKING, Any, Final
 
 import httpx
 
-logger = logging.getLogger(__name__)
-
 from retro_metadata.core.exceptions import (
     ProviderConnectionError,
     ProviderRateLimitError,
@@ -31,6 +29,8 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect Hasheous ID tags in filenames like (hasheous-xxxxx)
 HASHEOUS_TAG_REGEX: Final = re.compile(r"\(hasheous-([a-f0-9-]+)\)", re.IGNORECASE)
@@ -60,8 +60,8 @@ class HasheousProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
         dev_mode: bool = False,
     ) -> None:
@@ -409,11 +409,7 @@ class HasheousProvider(MetadataProvider):
         """
         # Get signature keys from the dict (romm's format)
         signatures = hasheous_result.get("signatures", {})
-        if isinstance(signatures, dict):
-            signature_keys = set(signatures.keys())
-        else:
-            # Fallback for list format
-            signature_keys = set()
+        signature_keys = set(signatures.keys()) if isinstance(signatures, dict) else set()
 
         return {
             "tosec_match": "TOSEC" in signature_keys,

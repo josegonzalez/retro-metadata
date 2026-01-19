@@ -35,8 +35,8 @@ class MetadataProvider(abc.ABC):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
     ) -> None:
         self.config = config
         self.cache = cache
@@ -101,7 +101,7 @@ class MetadataProvider(abc.ABC):
         if not self.is_enabled:
             return False
         try:
-            results = await self.search("test", limit=1)
+            await self.search("test", limit=1)
             return True
         except Exception:
             return False
@@ -221,6 +221,7 @@ class MetadataProvider(abc.ABC):
 
         Override in subclasses if cleanup is needed.
         """
+        return  # noqa: B027
 
 
 class ProviderRegistry:

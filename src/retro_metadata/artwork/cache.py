@@ -6,9 +6,9 @@ import asyncio
 import shutil
 import sqlite3
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 from retro_metadata.artwork.config import ArtworkConfig
 from retro_metadata.artwork.exceptions import ArtworkCacheError

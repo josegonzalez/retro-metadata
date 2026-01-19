@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import contextlib
 import json
 import logging
 import re
@@ -11,12 +12,6 @@ from typing import TYPE_CHECKING, Any, Final
 from urllib.parse import quote
 
 import httpx
-
-logger = logging.getLogger(__name__)
-
-# Default ScreenScraper developer credentials (from romm project)
-SS_DEV_ID: Final = base64.b64decode("enVyZGkxNQ==").decode()
-SS_DEV_PASSWORD: Final = base64.b64decode("eFRKd29PRmpPUUc=").decode()
 
 from retro_metadata.core.exceptions import (
     ProviderAuthenticationError,
@@ -36,6 +31,12 @@ from retro_metadata.types.common import (
 if TYPE_CHECKING:
     from retro_metadata.cache.base import CacheBackend
     from retro_metadata.core.config import ProviderConfig
+
+logger = logging.getLogger(__name__)
+
+# Default ScreenScraper developer credentials (from romm project)
+SS_DEV_ID: Final = base64.b64decode("enVyZGkxNQ==").decode()
+SS_DEV_PASSWORD: Final = base64.b64decode("eFRKd29PRmpPUUc=").decode()
 
 # Regex to detect ScreenScraper ID tags in filenames like (ssfr-12345)
 SS_TAG_REGEX: Final = re.compile(r"\(ssfr-(\d+)\)", re.IGNORECASE)
@@ -88,8 +89,8 @@ class ScreenScraperProvider(MetadataProvider):
 
     def __init__(
         self,
-        config: "ProviderConfig",
-        cache: "CacheBackend | None" = None,
+        config: ProviderConfig,
+        cache: CacheBackend | None = None,
         user_agent: str = "retro-metadata/1.0",
         dev_id: str | None = None,
         dev_password: str | None = None,
@@ -587,11 +588,9 @@ class ScreenScraperProvider(MetadataProvider):
         total_rating = None
         note = game.get("note", {}).get("text", "")
         if note:
-            try:
+            with contextlib.suppress(ValueError):
                 # SS scores are out of 20, normalize to 100
                 total_rating = float(note) * 5
-            except ValueError:
-                pass
 
         # Player count
         player_count = game.get("joueurs", {}).get("text", "1")

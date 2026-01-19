@@ -126,7 +126,7 @@ class MetadataConfig:
         return [name for name, _ in providers]
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MetadataConfig":
+    def from_dict(cls, data: dict[str, Any]) -> MetadataConfig:
         """Create a MetadataConfig from a dictionary."""
         provider_fields = [
             "igdb",
