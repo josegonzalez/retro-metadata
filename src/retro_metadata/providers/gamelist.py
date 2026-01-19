@@ -150,8 +150,21 @@ class GamelistProvider(MetadataProvider):
         game: dict[str, Any] = {}
 
         # Core fields
-        for tag in ["path", "name", "desc", "rating", "releasedate", "developer",
-                    "publisher", "genre", "players", "md5", "lang", "region", "family"]:
+        for tag in [
+            "path",
+            "name",
+            "desc",
+            "rating",
+            "releasedate",
+            "developer",
+            "publisher",
+            "genre",
+            "players",
+            "md5",
+            "lang",
+            "region",
+            "family",
+        ]:
             child = elem.find(tag)
             if child is not None and child.text:
                 game[tag] = child.text

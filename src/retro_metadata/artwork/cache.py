@@ -400,9 +400,7 @@ class ArtworkCache:
         total = cursor.fetchone()[0]
 
         # Entries by provider
-        cursor.execute(
-            "SELECT provider, COUNT(*) as count FROM artwork_cache GROUP BY provider"
-        )
+        cursor.execute("SELECT provider, COUNT(*) as count FROM artwork_cache GROUP BY provider")
         by_provider = {row["provider"]: row["count"] for row in cursor.fetchall()}
 
         # Expired entries

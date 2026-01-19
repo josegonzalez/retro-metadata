@@ -90,7 +90,9 @@ class LaunchBoxProvider(MetadataProvider):
 
         # In-memory indices
         self._games_by_id: dict[int, dict[str, Any]] = {}
-        self._games_by_name: dict[str, dict[int, dict[str, Any]]] = {}  # name -> platform_id -> game
+        self._games_by_name: dict[
+            str, dict[int, dict[str, Any]]
+        ] = {}  # name -> platform_id -> game
         self._images_by_game_id: dict[int, list[dict[str, Any]]] = {}
         self._loaded = False
 

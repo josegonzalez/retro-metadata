@@ -100,9 +100,7 @@ def normalize_cover_url(url: str) -> str:
     return f"https:{url.replace('https:', '')}"
 
 
-def strip_sensitive_query_params(
-    url: str, sensitive_keys: set[str] | None = None
-) -> str:
+def strip_sensitive_query_params(url: str, sensitive_keys: set[str] | None = None) -> str:
     """Remove sensitive query parameters from a URL for logging.
 
     Args:

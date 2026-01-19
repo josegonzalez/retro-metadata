@@ -219,6 +219,7 @@ class ArtworkDownloader:
             URL with sensitive params masked
         """
         import re
+
         # Mask common auth params
         masked = re.sub(r"(ssid|sspassword|devid|devpassword|password)=[^&]+", r"\1=***", url)
         return masked
@@ -305,9 +306,7 @@ class ArtworkDownloader:
             raise ArtworkTimeoutError(url, self.config.timeout) from e
         except httpx.HTTPStatusError as e:
             logger.debug("HTTP error %d for URL: %s", e.response.status_code, url)
-            raise ArtworkDownloadError(
-                url, provider, f"HTTP {e.response.status_code}"
-            ) from e
+            raise ArtworkDownloadError(url, provider, f"HTTP {e.response.status_code}") from e
         except httpx.RequestError as e:
             logger.debug("Request error for URL %s: %s", url, e)
             raise ArtworkDownloadError(url, provider, str(e)) from e
@@ -595,9 +594,7 @@ class ArtworkDownloader:
                             # Check if this provider has the artwork we need
                             has_artwork = False
                             for artwork_type in types_to_download:
-                                url = self._get_artwork_url(
-                                    artwork_game.artwork, artwork_type
-                                )
+                                url = self._get_artwork_url(artwork_game.artwork, artwork_type)
                                 if url:
                                     logger.debug(
                                         "Provider %s has %s artwork: %s",
@@ -688,18 +685,14 @@ class ArtworkDownloader:
 
         # Determine extensions to scan
         if extensions:
-            ext_set = {
-                e.lower() if e.startswith(".") else f".{e.lower()}"
-                for e in extensions
-            }
+            ext_set = {e.lower() if e.startswith(".") else f".{e.lower()}" for e in extensions}
         else:
             ext_set = _get_rom_extensions_for_platform(platform)
 
         # Find ROM files
         pattern = "**/*" if recursive else "*"
         rom_files = [
-            f for f in directory.glob(pattern)
-            if f.is_file() and f.suffix.lower() in ext_set
+            f for f in directory.glob(pattern) if f.is_file() and f.suffix.lower() in ext_set
         ]
         rom_files = sorted(rom_files)
 
@@ -720,26 +713,34 @@ class ArtworkDownloader:
                 )
 
                 if downloaded:
-                    result.successful.append({
-                        "file": str(rom_path),
-                        "artwork": {k: str(v) for k, v in downloaded.items()},
-                    })
+                    result.successful.append(
+                        {
+                            "file": str(rom_path),
+                            "artwork": {k: str(v) for k, v in downloaded.items()},
+                        }
+                    )
                 else:
-                    result.skipped.append({
-                        "file": str(rom_path),
-                        "reason": "No artwork found",
-                    })
+                    result.skipped.append(
+                        {
+                            "file": str(rom_path),
+                            "reason": "No artwork found",
+                        }
+                    )
 
             except ArtworkNotFoundError:
-                result.skipped.append({
-                    "file": str(rom_path),
-                    "reason": "Game not identified",
-                })
+                result.skipped.append(
+                    {
+                        "file": str(rom_path),
+                        "reason": "Game not identified",
+                    }
+                )
             except Exception as e:
-                result.failed.append({
-                    "file": str(rom_path),
-                    "error": str(e),
-                })
+                result.failed.append(
+                    {
+                        "file": str(rom_path),
+                        "error": str(e),
+                    }
+                )
 
         return result
 

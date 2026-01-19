@@ -170,7 +170,9 @@ class HLTBProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("HLTB API response:\n%s", json.dumps(result, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "HLTB API response:\n%s", json.dumps(result, indent=2, ensure_ascii=False)
+                )
 
             return result
         except httpx.RequestError as e:
@@ -353,9 +355,7 @@ class HLTBProvider(MetadataProvider):
 
         # Find best match
         games_by_name = {g["game_name"]: g for g in result["data"] if g.get("game_name")}
-        best_match, score = self.find_best_match(
-            search_term, list(games_by_name.keys())
-        )
+        best_match, score = self.find_best_match(search_term, list(games_by_name.keys()))
 
         if best_match and best_match in games_by_name:
             game = games_by_name[best_match]
@@ -518,7 +518,10 @@ class HLTBProvider(MetadataProvider):
             result = response.json()
 
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("HLTB price check response:\n%s", json.dumps(result, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "HLTB price check response:\n%s",
+                    json.dumps(result, indent=2, ensure_ascii=False),
+                )
 
             # Parse price check response
             prices: dict[str, Any] = {}

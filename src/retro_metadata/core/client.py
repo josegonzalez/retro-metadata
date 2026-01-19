@@ -100,6 +100,7 @@ class MetadataClient:
                     from redis.asyncio import Redis
 
                     from retro_metadata.cache.redis import RedisCache
+
                     client = Redis.from_url(cache_config.connection_string)
                     self._cache = RedisCache(client, default_ttl=cache_config.ttl)
                 except ImportError:
@@ -107,6 +108,7 @@ class MetadataClient:
             elif cache_config.backend == "sqlite":
                 try:
                     from retro_metadata.cache.sqlite import SQLiteCache
+
                     self._cache = SQLiteCache(
                         cache_config.connection_string or "retro_metadata_cache.db",
                         default_ttl=cache_config.ttl,
@@ -127,6 +129,7 @@ class MetadataClient:
         # IGDB
         if self.config.igdb.enabled:
             from retro_metadata.providers.igdb import IGDBProvider
+
             self._providers["igdb"] = IGDBProvider(
                 self.config.igdb,
                 self._cache,
@@ -136,6 +139,7 @@ class MetadataClient:
         # MobyGames
         if self.config.mobygames.enabled:
             from retro_metadata.providers.mobygames import MobyGamesProvider
+
             self._providers["mobygames"] = MobyGamesProvider(
                 self.config.mobygames,
                 self._cache,
@@ -145,6 +149,7 @@ class MetadataClient:
         # ScreenScraper
         if self.config.screenscraper.enabled:
             from retro_metadata.providers.screenscraper import ScreenScraperProvider
+
             self._providers["screenscraper"] = ScreenScraperProvider(
                 self.config.screenscraper,
                 self._cache,
@@ -155,6 +160,7 @@ class MetadataClient:
         # RetroAchievements
         if self.config.retroachievements.enabled:
             from retro_metadata.providers.retroachievements import RetroAchievementsProvider
+
             self._providers["retroachievements"] = RetroAchievementsProvider(
                 self.config.retroachievements,
                 self._cache,
@@ -164,6 +170,7 @@ class MetadataClient:
         # SteamGridDB
         if self.config.steamgriddb.enabled:
             from retro_metadata.providers.steamgriddb import SteamGridDBProvider
+
             self._providers["steamgriddb"] = SteamGridDBProvider(
                 self.config.steamgriddb,
                 self._cache,
@@ -173,6 +180,7 @@ class MetadataClient:
         # HowLongToBeat
         if self.config.hltb.enabled:
             from retro_metadata.providers.hltb import HLTBProvider
+
             self._providers["hltb"] = HLTBProvider(
                 self.config.hltb,
                 self._cache,
@@ -182,6 +190,7 @@ class MetadataClient:
         # TheGamesDB
         if self.config.thegamesdb.enabled:
             from retro_metadata.providers.thegamesdb import TheGamesDBProvider
+
             self._providers["thegamesdb"] = TheGamesDBProvider(
                 self.config.thegamesdb,
                 self._cache,
@@ -191,6 +200,7 @@ class MetadataClient:
         # Hasheous
         if self.config.hasheous.enabled:
             from retro_metadata.providers.hasheous import HasheousProvider
+
             self._providers["hasheous"] = HasheousProvider(
                 self.config.hasheous,
                 self._cache,
@@ -200,6 +210,7 @@ class MetadataClient:
         # Flashpoint
         if self.config.flashpoint.enabled:
             from retro_metadata.providers.flashpoint import FlashpointProvider
+
             self._providers["flashpoint"] = FlashpointProvider(
                 self.config.flashpoint,
                 self._cache,
@@ -209,6 +220,7 @@ class MetadataClient:
         # Playmatch
         if self.config.playmatch.enabled:
             from retro_metadata.providers.playmatch import PlaymatchProvider
+
             self._providers["playmatch"] = PlaymatchProvider(
                 self.config.playmatch,
                 self._cache,
@@ -218,6 +230,7 @@ class MetadataClient:
         # LaunchBox (local metadata)
         if self.config.launchbox.enabled:
             from retro_metadata.providers.launchbox import LaunchBoxProvider
+
             self._providers["launchbox"] = LaunchBoxProvider(
                 self.config.launchbox,
                 self._cache,
@@ -227,6 +240,7 @@ class MetadataClient:
         # Gamelist (local gamelist.xml parser)
         if self.config.gamelist.enabled:
             from retro_metadata.providers.gamelist import GamelistProvider
+
             self._providers["gamelist"] = GamelistProvider(
                 self.config.gamelist,
                 self._cache,

@@ -154,6 +154,7 @@ async def compute_crc32_async(file_path: str | Path, chunk_size: int = 65536) ->
         CRC32 checksum as uppercase hex string
     """
     import asyncio
+
     return await asyncio.to_thread(compute_crc32, file_path, chunk_size)
 
 
@@ -170,6 +171,7 @@ async def compute_md5_async(file_path: str | Path, chunk_size: int = 65536) -> s
         MD5 hash as lowercase hex string
     """
     import asyncio
+
     return await asyncio.to_thread(compute_md5, file_path, chunk_size)
 
 
@@ -186,6 +188,7 @@ async def compute_sha1_async(file_path: str | Path, chunk_size: int = 65536) -> 
         SHA1 hash as lowercase hex string
     """
     import asyncio
+
     return await asyncio.to_thread(compute_sha1, file_path, chunk_size)
 
 
@@ -204,4 +207,5 @@ async def compute_all_hashes_async(
         Dictionary with 'crc32', 'md5', and 'sha1' keys
     """
     import asyncio
+
     return await asyncio.to_thread(compute_all_hashes, file_path, chunk_size)

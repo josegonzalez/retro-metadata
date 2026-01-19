@@ -109,7 +109,9 @@ class TheGamesDBProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("TheGamesDB API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "TheGamesDB API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                )
 
             return data
         except httpx.RequestError as e:
@@ -299,9 +301,7 @@ class TheGamesDBProvider(MetadataProvider):
             if g.get("game_title"):
                 games_by_name[g["game_title"]] = g
 
-        best_match, score = self.find_best_match(
-            search_term, list(games_by_name.keys())
-        )
+        best_match, score = self.find_best_match(search_term, list(games_by_name.keys()))
 
         if best_match and best_match in games_by_name:
             game = games_by_name[best_match]
@@ -317,9 +317,7 @@ class TheGamesDBProvider(MetadataProvider):
         name = re.sub(r"\s*[\(\[][^\)\]]*[\)\]]", "", name)
         return name.strip()
 
-    def _build_game_result(
-        self, game: dict[str, Any], boxart_data: dict[str, Any]
-    ) -> GameResult:
+    def _build_game_result(self, game: dict[str, Any], boxart_data: dict[str, Any]) -> GameResult:
         """Build a GameResult from TheGamesDB game data."""
         game_id = game.get("id", 0)
 
@@ -510,10 +508,22 @@ TGDB_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     # Emerson
     UPS.ARCADIA_2001: {"id": 4963, "name": "Arcadia 2001", "manufacturer": "Emerson"},
     # Epoch
-    UPS.EPOCH_CASSETTE_VISION: {"id": 4992, "name": "Epoch Cassette Vision", "manufacturer": "Epoch"},
-    UPS.EPOCH_SUPER_CASSETTE_VISION: {"id": 4993, "name": "Epoch Super Cassette Vision", "manufacturer": "Epoch"},
+    UPS.EPOCH_CASSETTE_VISION: {
+        "id": 4992,
+        "name": "Epoch Cassette Vision",
+        "manufacturer": "Epoch",
+    },
+    UPS.EPOCH_SUPER_CASSETTE_VISION: {
+        "id": 4993,
+        "name": "Epoch Super Cassette Vision",
+        "manufacturer": "Epoch",
+    },
     # Fairchild
-    UPS.FAIRCHILD_CHANNEL_F: {"id": 4928, "name": "Fairchild Channel F", "manufacturer": "Fairchild"},
+    UPS.FAIRCHILD_CHANNEL_F: {
+        "id": 4928,
+        "name": "Fairchild Channel F",
+        "manufacturer": "Fairchild",
+    },
     # FM Towns
     UPS.FM_TOWNS: {"id": 4932, "name": "FM Towns Marty", "manufacturer": "Fujitsu"},
     # Game Park
@@ -619,7 +629,11 @@ TGDB_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.SUPERVISION: {"id": 4966, "name": "Watara Supervision", "manufacturer": "Watara"},
     # Tandy
     UPS.TRS_80: {"id": 4941, "name": "TRS-80", "manufacturer": "Tandy"},
-    UPS.TRS_80_COLOR_COMPUTER: {"id": 4946, "name": "TRS-80 Color Computer", "manufacturer": "Tandy"},
+    UPS.TRS_80_COLOR_COMPUTER: {
+        "id": 4946,
+        "name": "TRS-80 Color Computer",
+        "manufacturer": "Tandy",
+    },
     # Texas Instruments
     UPS.TI_994A: {"id": 4953, "name": "TI-99/4A", "manufacturer": "Texas Instruments"},
     UPS.TI_99: {"id": 4953, "name": "TI-99/4", "manufacturer": "Texas Instruments"},
@@ -628,7 +642,11 @@ TGDB_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     # VTech
     UPS.CREATIVISION: {"id": 4987, "name": "VTech CreatiVision", "manufacturer": "VTech"},
     # Watara
-    UPS.MEGA_DUCK_SLASH_COUGAR_BOY: {"id": 4981, "name": "Mega Duck", "manufacturer": "Welback Holdings"},
+    UPS.MEGA_DUCK_SLASH_COUGAR_BOY: {
+        "id": 4981,
+        "name": "Mega Duck",
+        "manufacturer": "Welback Holdings",
+    },
     # Modern / Cloud
     UPS.STADIA: {"id": 4982, "name": "Google Stadia", "manufacturer": "Google"},
     UPS.AMAZON_FIRE_TV: {"id": 4952, "name": "Amazon Fire TV", "manufacturer": "Amazon"},

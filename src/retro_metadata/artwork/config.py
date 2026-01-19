@@ -60,11 +60,13 @@ class ArtworkConfig:
 
 
 # Valid artwork types
-ARTWORK_TYPES = frozenset([
-    "cover",
-    "screenshots",
-    "banner",
-    "icon",
-    "logo",
-    "background",
-])
+ARTWORK_TYPES = frozenset(
+    [
+        "cover",
+        "screenshots",
+        "banner",
+        "icon",
+        "logo",
+        "background",
+    ]
+)

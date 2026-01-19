@@ -186,9 +186,7 @@ class IGDBProvider(MetadataProvider):
                     self._oauth_token = token
                     return token
 
-                raise ProviderAuthenticationError(
-                    self.name, "Failed to obtain OAuth token"
-                )
+                raise ProviderAuthenticationError(self.name, "Failed to obtain OAuth token")
         except aiohttp.ClientError as e:
             raise ProviderConnectionError(self.name, str(e)) from e
 
@@ -211,6 +209,7 @@ class IGDBProvider(MetadataProvider):
             # Use unidecode for ASCII conversion
             try:
                 from unidecode import unidecode
+
                 query_parts.append(f'search "{unidecode(search_term)}";')
             except ImportError:
                 query_parts.append(f'search "{search_term}";')
@@ -255,7 +254,9 @@ class IGDBProvider(MetadataProvider):
 
                 # Log full response body only when debug logging is enabled
                 if logger.isEnabledFor(logging.DEBUG):
-                    logger.debug("IGDB API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                    logger.debug(
+                        "IGDB API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                    )
 
                 return data
         except aiohttp.ClientError as e:
@@ -304,18 +305,21 @@ class IGDBProvider(MetadataProvider):
             release_year = None
             if "first_release_date" in game:
                 from datetime import datetime
+
                 with contextlib.suppress(ValueError, OSError):
                     release_year = datetime.fromtimestamp(game["first_release_date"]).year
 
-            search_results.append(SearchResult(
-                name=game.get("name", ""),
-                provider=self.name,
-                provider_id=game["id"],
-                slug=game.get("slug", ""),
-                cover_url=cover_url.replace("t_thumb", "t_cover_big") if cover_url else "",
-                platforms=platforms,
-                release_year=release_year,
-            ))
+            search_results.append(
+                SearchResult(
+                    name=game.get("name", ""),
+                    provider=self.name,
+                    provider_id=game["id"],
+                    slug=game.get("slug", ""),
+                    cover_url=cover_url.replace("t_thumb", "t_cover_big") if cover_url else "",
+                    platforms=platforms,
+                    release_year=release_year,
+                )
+            )
 
         return search_results
 
@@ -465,24 +469,40 @@ class IGDBProvider(MetadataProvider):
         # Extract genres
         genres = []
         if "genres" in game:
-            genres = [g.get("name", "") for g in game["genres"] if isinstance(g, dict) and g.get("name")]
+            genres = [
+                g.get("name", "") for g in game["genres"] if isinstance(g, dict) and g.get("name")
+            ]
 
         # Extract franchises
         franchises = []
         if "franchise" in game and isinstance(game["franchise"], dict):
             franchises.append(game["franchise"].get("name", ""))
         if "franchises" in game:
-            franchises.extend([f.get("name", "") for f in game["franchises"] if isinstance(f, dict) and f.get("name")])
+            franchises.extend(
+                [
+                    f.get("name", "")
+                    for f in game["franchises"]
+                    if isinstance(f, dict) and f.get("name")
+                ]
+            )
 
         # Extract alternative names
         alt_names = []
         if "alternative_names" in game:
-            alt_names = [n.get("name", "") for n in game["alternative_names"] if isinstance(n, dict) and n.get("name")]
+            alt_names = [
+                n.get("name", "")
+                for n in game["alternative_names"]
+                if isinstance(n, dict) and n.get("name")
+            ]
 
         # Extract collections
         collections = []
         if "collections" in game:
-            collections = [c.get("name", "") for c in game["collections"] if isinstance(c, dict) and c.get("name")]
+            collections = [
+                c.get("name", "")
+                for c in game["collections"]
+                if isinstance(c, dict) and c.get("name")
+            ]
 
         # Extract companies
         companies = []
@@ -496,18 +516,24 @@ class IGDBProvider(MetadataProvider):
         # Extract game modes
         game_modes = []
         if "game_modes" in game:
-            game_modes = [g.get("name", "") for g in game["game_modes"] if isinstance(g, dict) and g.get("name")]
+            game_modes = [
+                g.get("name", "")
+                for g in game["game_modes"]
+                if isinstance(g, dict) and g.get("name")
+            ]
 
         # Extract platforms
         platforms = []
         if "platforms" in game:
             for p in game["platforms"]:
                 if isinstance(p, dict):
-                    platforms.append(Platform(
-                        slug="",
-                        name=p.get("name", ""),
-                        provider_ids={"igdb": p.get("id", 0)},
-                    ))
+                    platforms.append(
+                        Platform(
+                            slug="",
+                            name=p.get("name", ""),
+                            provider_ids={"igdb": p.get("id", 0)},
+                        )
+                    )
 
         # Extract related games
         def extract_related(key: str, rel_type: str) -> list[RelatedGame]:
@@ -519,14 +545,16 @@ class IGDBProvider(MetadataProvider):
                         if "cover" in r and isinstance(r["cover"], dict):
                             cover_url = self.normalize_cover_url(r["cover"].get("url", ""))
                             cover_url = cover_url.replace("t_thumb", "t_1080p")
-                        related.append(RelatedGame(
-                            id=r.get("id", 0),
-                            name=r.get("name", ""),
-                            slug=r.get("slug", ""),
-                            relation_type=rel_type,
-                            cover_url=cover_url,
-                            provider=self.name,
-                        ))
+                        related.append(
+                            RelatedGame(
+                                id=r.get("id", 0),
+                                name=r.get("name", ""),
+                                slug=r.get("slug", ""),
+                                relation_type=rel_type,
+                                cover_url=cover_url,
+                                provider=self.name,
+                            )
+                        )
             return related
 
         # Extract video
@@ -681,15 +709,15 @@ IGDB_LOCALE_MAP: dict[str, int] = {
     "it-IT": 7,  # Italian
     "pt-BR": 8,  # Portuguese (Brazil)
     "ko-KR": 9,  # Korean
-    "zh-CN": 10, # Chinese (Simplified)
-    "zh-TW": 11, # Chinese (Traditional)
-    "ru-RU": 12, # Russian
-    "pl-PL": 13, # Polish
-    "nl-NL": 14, # Dutch
-    "sv-SE": 15, # Swedish
-    "da-DK": 16, # Danish
-    "fi-FI": 17, # Finnish
-    "no-NO": 18, # Norwegian
+    "zh-CN": 10,  # Chinese (Simplified)
+    "zh-TW": 11,  # Chinese (Traditional)
+    "ru-RU": 12,  # Russian
+    "pl-PL": 13,  # Polish
+    "nl-NL": 14,  # Dutch
+    "sv-SE": 15,  # Swedish
+    "da-DK": 16,  # Danish
+    "fi-FI": 17,  # Finnish
+    "no-NO": 18,  # Norwegian
 }
 
 

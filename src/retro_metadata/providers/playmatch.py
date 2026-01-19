@@ -101,7 +101,9 @@ class PlaymatchProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Playmatch API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "Playmatch API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                )
 
             return data
         except httpx.RequestError as e:

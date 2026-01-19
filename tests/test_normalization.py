@@ -28,8 +28,14 @@ class TestNormalizeSearchTerm:
 
         # Handle different assertion types
         if "expected" in test_case:
-            assert result == test_case["expected"], f"Test {test_id}: expected '{test_case['expected']}', got '{result}'"
+            assert result == test_case["expected"], (
+                f"Test {test_id}: expected '{test_case['expected']}', got '{result}'"
+            )
         elif "expected_contains" in test_case:
-            assert test_case["expected_contains"] in result, f"Test {test_id}: expected '{test_case['expected_contains']}' in result, got '{result}'"
+            assert test_case["expected_contains"] in result, (
+                f"Test {test_id}: expected '{test_case['expected_contains']}' in result, got '{result}'"
+            )
         elif "expected_not_contains" in test_case:
-            assert test_case["expected_not_contains"] not in result, f"Test {test_id}: expected '{test_case['expected_not_contains']}' not in result, got '{result}'"
+            assert test_case["expected_not_contains"] not in result, (
+                f"Test {test_id}: expected '{test_case['expected_not_contains']}' not in result, got '{result}'"
+            )

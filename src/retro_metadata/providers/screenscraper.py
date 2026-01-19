@@ -180,7 +180,8 @@ class ScreenScraperProvider(MetadataProvider):
 
         # Log request (mask sensitive credentials)
         log_params = {
-            k: v for k, v in params.items()
+            k: v
+            for k, v in params.items()
             if k not in SENSITIVE_KEYS and k not in ("ssid", "sspassword", "devid", "devpassword")
         }
         logger.debug("ScreenScraper API: GET %s", url)
@@ -206,7 +207,10 @@ class ScreenScraperProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("ScreenScraper API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "ScreenScraper API response:\n%s",
+                    json.dumps(data, indent=2, ensure_ascii=False),
+                )
 
             return data
         except httpx.RequestError as e:
@@ -224,9 +228,7 @@ class ScreenScraperProvider(MetadataProvider):
             return names[0].get("text", "")
         return ""
 
-    def _get_preferred_text(
-        self, items: list[dict[str, str]], key: str = "langue"
-    ) -> str:
+    def _get_preferred_text(self, items: list[dict[str, str]], key: str = "langue") -> str:
         """Get preferred text based on language priority."""
         for lang in self._language_priority:
             for item in items:
@@ -236,9 +238,7 @@ class ScreenScraperProvider(MetadataProvider):
             return items[0].get("text", "")
         return ""
 
-    def _get_media_url(
-        self, medias: list[dict[str, Any]], media_type: str
-    ) -> str:
+    def _get_media_url(self, medias: list[dict[str, Any]], media_type: str) -> str:
         """Get media URL for a specific type with region preference."""
         for region in self._region_priority:
             for media in medias:
@@ -460,9 +460,7 @@ class ScreenScraperProvider(MetadataProvider):
                     games_by_name[name_text] = game
 
         # Find best match
-        best_match, score = self.find_best_match(
-            search_term, list(games_by_name.keys())
-        )
+        best_match, score = self.find_best_match(search_term, list(games_by_name.keys()))
 
         if best_match and best_match in games_by_name:
             game_result = self._build_game_result(games_by_name[best_match])
@@ -502,9 +500,7 @@ class ScreenScraperProvider(MetadataProvider):
         if fanart:
             screenshot_urls.append(fanart)
 
-        logo_url = self._get_media_url(medias, "wheel-hd") or self._get_media_url(
-            medias, "wheel"
-        )
+        logo_url = self._get_media_url(medias, "wheel-hd") or self._get_media_url(medias, "wheel")
         banner_url = self._get_media_url(medias, "screenmarquee")
 
         # Extract metadata
@@ -578,9 +574,7 @@ class ScreenScraperProvider(MetadataProvider):
                             datetime.strptime(date_text, "%Y-%m-%d").timestamp()
                         )
                     elif len(date_text) == 4:  # YYYY
-                        first_release_date = int(
-                            datetime.strptime(date_text, "%Y").timestamp()
-                        )
+                        first_release_date = int(datetime.strptime(date_text, "%Y").timestamp())
                 except ValueError:
                     pass
 

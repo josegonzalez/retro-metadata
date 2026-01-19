@@ -73,9 +73,7 @@ class MemoryCache(CacheBackend):
     async def _cleanup_expired(self) -> None:
         """Remove all expired entries from the cache."""
         async with self._lock:
-            expired_keys = [
-                key for key, entry in self._cache.items() if entry.is_expired()
-            ]
+            expired_keys = [key for key, entry in self._cache.items() if entry.is_expired()]
             for key in expired_keys:
                 del self._cache[key]
 

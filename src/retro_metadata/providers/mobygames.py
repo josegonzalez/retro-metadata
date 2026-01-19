@@ -130,7 +130,9 @@ class MobyGamesProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("MobyGames API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "MobyGames API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                )
 
             return data
         except httpx.RequestError as e:
@@ -186,14 +188,16 @@ class MobyGamesProvider(MetadataProvider):
                     with contextlib.suppress(ValueError, IndexError):
                         release_year = int(first_date[:4])
 
-            search_results.append(SearchResult(
-                name=game.get("title", ""),
-                provider=self.name,
-                provider_id=game["game_id"],
-                cover_url=cover_url,
-                platforms=platforms,
-                release_year=release_year,
-            ))
+            search_results.append(
+                SearchResult(
+                    name=game.get("title", ""),
+                    provider=self.name,
+                    provider_id=game["game_id"],
+                    cover_url=cover_url,
+                    platforms=platforms,
+                    release_year=release_year,
+                )
+            )
 
         return search_results
 
@@ -286,6 +290,7 @@ class MobyGamesProvider(MetadataProvider):
         # Try unidecode for ASCII conversion
         try:
             from unidecode import unidecode
+
             search_term = unidecode(search_term)
         except ImportError:
             pass
@@ -413,7 +418,9 @@ class MobyGamesProvider(MetadataProvider):
         # Extract screenshots
         screenshot_urls = []
         if "sample_screenshots" in game:
-            screenshot_urls = [s.get("image", "") for s in game["sample_screenshots"] if s.get("image")]
+            screenshot_urls = [
+                s.get("image", "") for s in game["sample_screenshots"] if s.get("image")
+            ]
 
         # Extract metadata
         metadata = self._extract_metadata(game)
@@ -448,11 +455,13 @@ class MobyGamesProvider(MetadataProvider):
         platforms = []
         if "platforms" in game:
             for p in game["platforms"]:
-                platforms.append(Platform(
-                    slug="",
-                    name=p.get("platform_name", ""),
-                    provider_ids={"mobygames": p.get("platform_id", 0)},
-                ))
+                platforms.append(
+                    Platform(
+                        slug="",
+                        name=p.get("platform_name", ""),
+                        provider_ids={"mobygames": p.get("platform_id", 0)},
+                    )
+                )
 
         # Extract rating
         total_rating = None

@@ -36,7 +36,9 @@ logger = logging.getLogger(__name__)
 HASHEOUS_TAG_REGEX: Final = re.compile(r"\(hasheous-([a-f0-9-]+)\)", re.IGNORECASE)
 
 # Hasheous API keys for client authentication
-HASHEOUS_API_KEY_PRODUCTION: Final = "JNoFBA-jEh4HbxuxEHM6MVzydKoAXs9eCcp2dvcg5LRCnpp312voiWmjuaIssSzS"
+HASHEOUS_API_KEY_PRODUCTION: Final = (
+    "JNoFBA-jEh4HbxuxEHM6MVzydKoAXs9eCcp2dvcg5LRCnpp312voiWmjuaIssSzS"
+)
 HASHEOUS_API_KEY_DEV: Final = "UUvh9ef_CddMM4xXO1iqxl9FqEt764v33LU-UiGFc0P34odXjMP9M6MTeE4JZRxZ"
 
 # Hasheous API URLs
@@ -122,7 +124,9 @@ class HasheousProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Hasheous API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "Hasheous API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                )
 
             return data
         except httpx.RequestError as e:
@@ -284,7 +288,9 @@ class HasheousProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Hasheous API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "Hasheous API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                )
 
             return data
         except httpx.RequestError as e:
@@ -459,9 +465,7 @@ class HasheousProvider(MetadataProvider):
 
         # Find best match
         games_by_name = {r.name: r for r in results}
-        best_match, score = self.find_best_match(
-            search_term, list(games_by_name.keys())
-        )
+        best_match, score = self.find_best_match(search_term, list(games_by_name.keys()))
 
         if best_match and best_match in games_by_name:
             search_result = games_by_name[best_match]
@@ -589,47 +593,151 @@ class HasheousProvider(MetadataProvider):
 # Also includes signature matching support info (TOSEC, NoIntro, Redump, etc.)
 HASHEOUS_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     # 3DO
-    UPS._3DO: {"name": "3DO Interactive Multiplayer", "igdb_id": 50, "tgdb_id": 25, "ra_id": 43, "nointro": True, "redump": True},
+    UPS._3DO: {
+        "name": "3DO Interactive Multiplayer",
+        "igdb_id": 50,
+        "tgdb_id": 25,
+        "ra_id": 43,
+        "nointro": True,
+        "redump": True,
+    },
     # Amstrad
-    UPS.ACPC: {"name": "Amstrad CPC", "igdb_id": 25, "tgdb_id": 4914, "ra_id": 37, "tosec": True, "nointro": True},
-    UPS.AMSTRAD_GX4000: {"name": "Amstrad GX4000", "igdb_id": 158, "tgdb_id": 4999, "nointro": True},
+    UPS.ACPC: {
+        "name": "Amstrad CPC",
+        "igdb_id": 25,
+        "tgdb_id": 4914,
+        "ra_id": 37,
+        "tosec": True,
+        "nointro": True,
+    },
+    UPS.AMSTRAD_GX4000: {
+        "name": "Amstrad GX4000",
+        "igdb_id": 158,
+        "tgdb_id": 4999,
+        "nointro": True,
+    },
     # Android / iOS / Mobile
     UPS.ANDROID: {"name": "Android", "igdb_id": 34, "tgdb_id": 4916},
     UPS.IOS: {"name": "iOS", "igdb_id": 39},
     # Apple
-    UPS.APPLEII: {"name": "Apple II", "igdb_id": 75, "tgdb_id": 4942, "ra_id": 38, "tosec": True, "nointro": True},
+    UPS.APPLEII: {
+        "name": "Apple II",
+        "igdb_id": 75,
+        "tgdb_id": 4942,
+        "ra_id": 38,
+        "tosec": True,
+        "nointro": True,
+    },
     UPS.APPLE_IIGS: {"name": "Apple IIGS", "igdb_id": 115, "tosec": True},
     UPS.MAC: {"name": "Macintosh", "igdb_id": 14, "tgdb_id": 37},
     # Arcade
-    UPS.ARCADE: {"name": "Arcade", "igdb_id": 52, "tgdb_id": 23, "ra_id": 27, "fbneo": True, "mame": True},
+    UPS.ARCADE: {
+        "name": "Arcade",
+        "igdb_id": 52,
+        "tgdb_id": 23,
+        "ra_id": 27,
+        "fbneo": True,
+        "mame": True,
+    },
     UPS.CPS1: {"name": "Capcom Play System", "igdb_id": 52, "fbneo": True},
     UPS.CPS2: {"name": "Capcom Play System 2", "igdb_id": 52, "fbneo": True},
     UPS.CPS3: {"name": "Capcom Play System 3", "igdb_id": 52, "fbneo": True},
-    UPS.NEOGEOAES: {"name": "Neo Geo AES", "igdb_id": 80, "tgdb_id": 24, "ra_id": 27, "fbneo": True},
+    UPS.NEOGEOAES: {
+        "name": "Neo Geo AES",
+        "igdb_id": 80,
+        "tgdb_id": 24,
+        "ra_id": 27,
+        "fbneo": True,
+    },
     UPS.NEOGEOMVS: {"name": "Neo Geo MVS", "igdb_id": 79, "fbneo": True},
     # Atari
-    UPS.ATARI2600: {"name": "Atari 2600", "igdb_id": 59, "tgdb_id": 22, "ra_id": 25, "nointro": True, "tosec": True},
-    UPS.ATARI5200: {"name": "Atari 5200", "igdb_id": 66, "tgdb_id": 26, "ra_id": 50, "nointro": True, "tosec": True},
-    UPS.ATARI7800: {"name": "Atari 7800", "igdb_id": 60, "tgdb_id": 27, "ra_id": 51, "nointro": True, "tosec": True},
+    UPS.ATARI2600: {
+        "name": "Atari 2600",
+        "igdb_id": 59,
+        "tgdb_id": 22,
+        "ra_id": 25,
+        "nointro": True,
+        "tosec": True,
+    },
+    UPS.ATARI5200: {
+        "name": "Atari 5200",
+        "igdb_id": 66,
+        "tgdb_id": 26,
+        "ra_id": 50,
+        "nointro": True,
+        "tosec": True,
+    },
+    UPS.ATARI7800: {
+        "name": "Atari 7800",
+        "igdb_id": 60,
+        "tgdb_id": 27,
+        "ra_id": 51,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.ATARI8BIT: {"name": "Atari 8-bit", "igdb_id": 65, "tgdb_id": 4943, "tosec": True},
     UPS.ATARI800: {"name": "Atari 800", "igdb_id": 65, "tgdb_id": 4943, "tosec": True},
     UPS.ATARI_ST: {"name": "Atari ST", "igdb_id": 63, "tgdb_id": 4937, "ra_id": 36, "tosec": True},
     UPS.ATARI_XEGS: {"name": "Atari XEGS", "igdb_id": 111, "tgdb_id": 30},
-    UPS.JAGUAR: {"name": "Atari Jaguar", "igdb_id": 62, "tgdb_id": 28, "ra_id": 17, "nointro": True},
-    UPS.ATARI_JAGUAR_CD: {"name": "Atari Jaguar CD", "igdb_id": 171, "tgdb_id": 29, "ra_id": 77, "redump": True},
+    UPS.JAGUAR: {
+        "name": "Atari Jaguar",
+        "igdb_id": 62,
+        "tgdb_id": 28,
+        "ra_id": 17,
+        "nointro": True,
+    },
+    UPS.ATARI_JAGUAR_CD: {
+        "name": "Atari Jaguar CD",
+        "igdb_id": 171,
+        "tgdb_id": 29,
+        "ra_id": 77,
+        "redump": True,
+    },
     UPS.LYNX: {"name": "Atari Lynx", "igdb_id": 61, "tgdb_id": 4924, "ra_id": 13, "nointro": True},
     # Bandai
-    UPS.WONDERSWAN: {"name": "WonderSwan", "igdb_id": 57, "tgdb_id": 4925, "ra_id": 53, "nointro": True},
-    UPS.WONDERSWAN_COLOR: {"name": "WonderSwan Color", "igdb_id": 123, "tgdb_id": 4926, "ra_id": 53, "nointro": True},
+    UPS.WONDERSWAN: {
+        "name": "WonderSwan",
+        "igdb_id": 57,
+        "tgdb_id": 4925,
+        "ra_id": 53,
+        "nointro": True,
+    },
+    UPS.WONDERSWAN_COLOR: {
+        "name": "WonderSwan Color",
+        "igdb_id": 123,
+        "tgdb_id": 4926,
+        "ra_id": 53,
+        "nointro": True,
+    },
     # BBC
     UPS.BBCMICRO: {"name": "BBC Micro", "igdb_id": 69, "tgdb_id": 5013, "tosec": True},
     # ColecoVision
-    UPS.COLECOVISION: {"name": "ColecoVision", "igdb_id": 68, "tgdb_id": 31, "ra_id": 44, "nointro": True, "tosec": True},
+    UPS.COLECOVISION: {
+        "name": "ColecoVision",
+        "igdb_id": 68,
+        "tgdb_id": 31,
+        "ra_id": 44,
+        "nointro": True,
+        "tosec": True,
+    },
     # Commodore
-    UPS.AMIGA: {"name": "Commodore Amiga", "igdb_id": 16, "tgdb_id": 4911, "tosec": True, "whdload": True},
+    UPS.AMIGA: {
+        "name": "Commodore Amiga",
+        "igdb_id": 16,
+        "tgdb_id": 4911,
+        "tosec": True,
+        "whdload": True,
+    },
     UPS.AMIGA_CD: {"name": "Amiga CD", "igdb_id": 114, "redump": True},
     UPS.AMIGA_CD32: {"name": "Amiga CD32", "igdb_id": 117, "tgdb_id": 4947, "redump": True},
-    UPS.C64: {"name": "Commodore 64", "igdb_id": 15, "tgdb_id": 40, "ra_id": 52, "tosec": True, "nointro": True},
+    UPS.C64: {
+        "name": "Commodore 64",
+        "igdb_id": 15,
+        "tgdb_id": 40,
+        "ra_id": 52,
+        "tosec": True,
+        "nointro": True,
+    },
     UPS.C128: {"name": "Commodore 128", "igdb_id": 15, "tosec": True},
     UPS.VIC_20: {"name": "Commodore VIC-20", "igdb_id": 71, "tosec": True},
     UPS.COMMODORE_CDTV: {"name": "Commodore CDTV", "igdb_id": 116, "redump": True},
@@ -639,18 +747,38 @@ HASHEOUS_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.WIN3X: {"name": "Windows 3.x", "igdb_id": 6, "exodos": True},
     UPS.LINUX: {"name": "Linux", "igdb_id": 3},
     # Fairchild
-    UPS.FAIRCHILD_CHANNEL_F: {"name": "Fairchild Channel F", "igdb_id": 127, "tgdb_id": 4928, "ra_id": 57, "nointro": True},
+    UPS.FAIRCHILD_CHANNEL_F: {
+        "name": "Fairchild Channel F",
+        "igdb_id": 127,
+        "tgdb_id": 4928,
+        "ra_id": 57,
+        "nointro": True,
+    },
     # FM Towns
     UPS.FM_TOWNS: {"name": "FM Towns", "redump": True},
     # Intellivision
-    UPS.INTELLIVISION: {"name": "Intellivision", "igdb_id": 67, "tgdb_id": 32, "ra_id": 45, "nointro": True, "tosec": True},
+    UPS.INTELLIVISION: {
+        "name": "Intellivision",
+        "igdb_id": 67,
+        "tgdb_id": 32,
+        "ra_id": 45,
+        "nointro": True,
+        "tosec": True,
+    },
     # Microsoft Xbox
     UPS.XBOX: {"name": "Microsoft Xbox", "igdb_id": 11, "tgdb_id": 14, "redump": True},
     UPS.XBOX360: {"name": "Microsoft Xbox 360", "igdb_id": 12, "tgdb_id": 15, "redump": True},
     UPS.XBOXONE: {"name": "Xbox One", "igdb_id": 49},
     UPS.SERIES_X_S: {"name": "Xbox Series X|S", "igdb_id": 169},
     # MSX
-    UPS.MSX: {"name": "MSX", "igdb_id": 27, "tgdb_id": 4929, "ra_id": 29, "nointro": True, "tosec": True},
+    UPS.MSX: {
+        "name": "MSX",
+        "igdb_id": 27,
+        "tgdb_id": 4929,
+        "ra_id": 29,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.MSX2: {"name": "MSX2", "igdb_id": 53, "nointro": True, "tosec": True},
     UPS.MSX2PLUS: {"name": "MSX2+", "igdb_id": 161},
     UPS.MSX_TURBO: {"name": "MSX turboR"},
@@ -659,50 +787,181 @@ HASHEOUS_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.PC_9800_SERIES: {"name": "NEC PC-9801", "igdb_id": 149, "ra_id": 48, "nointro": True},
     UPS.PC_FX: {"name": "PC-FX", "igdb_id": 274, "tgdb_id": 4930, "ra_id": 49, "redump": True},
     UPS.TG16: {"name": "TurboGrafx-16", "igdb_id": 86, "tgdb_id": 34, "ra_id": 8, "nointro": True},
-    UPS.TURBOGRAFX_CD: {"name": "TurboGrafx-CD", "igdb_id": 150, "tgdb_id": 4940, "ra_id": 8, "redump": True},
-    UPS.SUPERGRAFX: {"name": "SuperGrafx", "igdb_id": 128, "tgdb_id": 4955, "ra_id": 76, "nointro": True},
+    UPS.TURBOGRAFX_CD: {
+        "name": "TurboGrafx-CD",
+        "igdb_id": 150,
+        "tgdb_id": 4940,
+        "ra_id": 8,
+        "redump": True,
+    },
+    UPS.SUPERGRAFX: {
+        "name": "SuperGrafx",
+        "igdb_id": 128,
+        "tgdb_id": 4955,
+        "ra_id": 76,
+        "nointro": True,
+    },
     # Neo Geo
-    UPS.NEO_GEO_CD: {"name": "Neo Geo CD", "igdb_id": 136, "tgdb_id": 4956, "ra_id": 56, "redump": True},
-    UPS.NEO_GEO_POCKET: {"name": "Neo Geo Pocket", "igdb_id": 119, "tgdb_id": 4922, "ra_id": 14, "nointro": True},
-    UPS.NEO_GEO_POCKET_COLOR: {"name": "Neo Geo Pocket Color", "igdb_id": 120, "tgdb_id": 4923, "ra_id": 14, "nointro": True},
+    UPS.NEO_GEO_CD: {
+        "name": "Neo Geo CD",
+        "igdb_id": 136,
+        "tgdb_id": 4956,
+        "ra_id": 56,
+        "redump": True,
+    },
+    UPS.NEO_GEO_POCKET: {
+        "name": "Neo Geo Pocket",
+        "igdb_id": 119,
+        "tgdb_id": 4922,
+        "ra_id": 14,
+        "nointro": True,
+    },
+    UPS.NEO_GEO_POCKET_COLOR: {
+        "name": "Neo Geo Pocket Color",
+        "igdb_id": 120,
+        "tgdb_id": 4923,
+        "ra_id": 14,
+        "nointro": True,
+    },
     # Nintendo Consoles
-    UPS.NES: {"name": "Nintendo Entertainment System", "igdb_id": 18, "tgdb_id": 7, "ra_id": 7, "nointro": True, "tosec": True},
+    UPS.NES: {
+        "name": "Nintendo Entertainment System",
+        "igdb_id": 18,
+        "tgdb_id": 7,
+        "ra_id": 7,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.FAMICOM: {"name": "Famicom", "igdb_id": 99, "ra_id": 7, "nointro": True},
-    UPS.FDS: {"name": "Famicom Disk System", "igdb_id": 51, "tgdb_id": 4936, "ra_id": 7, "nointro": True},
-    UPS.SNES: {"name": "Super Nintendo Entertainment System", "igdb_id": 19, "tgdb_id": 6, "ra_id": 3, "nointro": True, "tosec": True},
+    UPS.FDS: {
+        "name": "Famicom Disk System",
+        "igdb_id": 51,
+        "tgdb_id": 4936,
+        "ra_id": 7,
+        "nointro": True,
+    },
+    UPS.SNES: {
+        "name": "Super Nintendo Entertainment System",
+        "igdb_id": 19,
+        "tgdb_id": 6,
+        "ra_id": 3,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.SFAM: {"name": "Super Famicom", "igdb_id": 58, "ra_id": 3, "nointro": True},
     UPS.SATELLAVIEW: {"name": "Satellaview", "igdb_id": 58, "nointro": True},
     UPS.SUFAMI_TURBO: {"name": "Sufami Turbo", "nointro": True},
     UPS.N64: {"name": "Nintendo 64", "igdb_id": 4, "tgdb_id": 3, "ra_id": 2, "nointro": True},
     UPS.N64DD: {"name": "Nintendo 64DD", "igdb_id": 416, "nointro": True},
-    UPS.NGC: {"name": "Nintendo GameCube", "igdb_id": 21, "tgdb_id": 2, "ra_id": 16, "redump": True, "nkit": True},
+    UPS.NGC: {
+        "name": "Nintendo GameCube",
+        "igdb_id": 21,
+        "tgdb_id": 2,
+        "ra_id": 16,
+        "redump": True,
+        "nkit": True,
+    },
     UPS.WII: {"name": "Nintendo Wii", "igdb_id": 5, "tgdb_id": 9, "redump": True, "nkit": True},
     UPS.WIIU: {"name": "Nintendo Wii U", "igdb_id": 41, "tgdb_id": 38, "redump": True},
     UPS.SWITCH: {"name": "Nintendo Switch", "igdb_id": 130, "tgdb_id": 4971},
     # Nintendo Handhelds
-    UPS.GB: {"name": "Game Boy", "igdb_id": 33, "tgdb_id": 4, "ra_id": 4, "nointro": True, "tosec": True},
-    UPS.GBC: {"name": "Game Boy Color", "igdb_id": 22, "tgdb_id": 41, "ra_id": 6, "nointro": True, "tosec": True},
-    UPS.GBA: {"name": "Game Boy Advance", "igdb_id": 24, "tgdb_id": 5, "ra_id": 5, "nointro": True, "tosec": True},
+    UPS.GB: {
+        "name": "Game Boy",
+        "igdb_id": 33,
+        "tgdb_id": 4,
+        "ra_id": 4,
+        "nointro": True,
+        "tosec": True,
+    },
+    UPS.GBC: {
+        "name": "Game Boy Color",
+        "igdb_id": 22,
+        "tgdb_id": 41,
+        "ra_id": 6,
+        "nointro": True,
+        "tosec": True,
+    },
+    UPS.GBA: {
+        "name": "Game Boy Advance",
+        "igdb_id": 24,
+        "tgdb_id": 5,
+        "ra_id": 5,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.NDS: {"name": "Nintendo DS", "igdb_id": 20, "tgdb_id": 8, "ra_id": 18, "nointro": True},
     UPS.NINTENDO_DSI: {"name": "Nintendo DSi", "igdb_id": 20, "nointro": True},
     UPS.N3DS: {"name": "Nintendo 3DS", "igdb_id": 37, "tgdb_id": 4912, "nointro": True},
     UPS.NEW_NINTENDON3DS: {"name": "New Nintendo 3DS", "igdb_id": 137, "nointro": True},
-    UPS.VIRTUALBOY: {"name": "Virtual Boy", "igdb_id": 87, "tgdb_id": 4918, "ra_id": 28, "nointro": True},
+    UPS.VIRTUALBOY: {
+        "name": "Virtual Boy",
+        "igdb_id": 87,
+        "tgdb_id": 4918,
+        "ra_id": 28,
+        "nointro": True,
+    },
     UPS.POKEMON_MINI: {"name": "Pokémon mini", "igdb_id": 207, "ra_id": 24, "nointro": True},
     # Odyssey
-    UPS.ODYSSEY_2: {"name": "Magnavox Odyssey 2", "igdb_id": 133, "tgdb_id": 4927, "ra_id": 23, "nointro": True},
+    UPS.ODYSSEY_2: {
+        "name": "Magnavox Odyssey 2",
+        "igdb_id": 133,
+        "tgdb_id": 4927,
+        "ra_id": 23,
+        "nointro": True,
+    },
     # Philips
     UPS.PHILIPS_CD_I: {"name": "Philips CD-i", "redump": True},
     # Sega
-    UPS.SG1000: {"name": "Sega SG-1000", "igdb_id": 84, "tgdb_id": 4949, "ra_id": 33, "nointro": True},
-    UPS.SMS: {"name": "Sega Master System", "igdb_id": 64, "tgdb_id": 35, "ra_id": 11, "nointro": True, "tosec": True},
-    UPS.GENESIS: {"name": "Sega Genesis", "igdb_id": 29, "tgdb_id": 18, "ra_id": 1, "nointro": True, "tosec": True},
+    UPS.SG1000: {
+        "name": "Sega SG-1000",
+        "igdb_id": 84,
+        "tgdb_id": 4949,
+        "ra_id": 33,
+        "nointro": True,
+    },
+    UPS.SMS: {
+        "name": "Sega Master System",
+        "igdb_id": 64,
+        "tgdb_id": 35,
+        "ra_id": 11,
+        "nointro": True,
+        "tosec": True,
+    },
+    UPS.GENESIS: {
+        "name": "Sega Genesis",
+        "igdb_id": 29,
+        "tgdb_id": 18,
+        "ra_id": 1,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.SEGACD: {"name": "Sega CD", "igdb_id": 78, "tgdb_id": 21, "ra_id": 9, "redump": True},
     UPS.SEGACD32: {"name": "Sega CD 32X", "igdb_id": 78, "redump": True},
     UPS.SEGA32: {"name": "Sega 32X", "igdb_id": 30, "tgdb_id": 33, "ra_id": 10, "nointro": True},
-    UPS.SATURN: {"name": "Sega Saturn", "igdb_id": 32, "tgdb_id": 17, "ra_id": 39, "redump": True, "tosec": True},
-    UPS.DC: {"name": "Sega Dreamcast", "igdb_id": 23, "tgdb_id": 16, "ra_id": 40, "redump": True, "tosec": True},
-    UPS.GAMEGEAR: {"name": "Sega Game Gear", "igdb_id": 35, "tgdb_id": 20, "ra_id": 15, "nointro": True, "tosec": True},
+    UPS.SATURN: {
+        "name": "Sega Saturn",
+        "igdb_id": 32,
+        "tgdb_id": 17,
+        "ra_id": 39,
+        "redump": True,
+        "tosec": True,
+    },
+    UPS.DC: {
+        "name": "Sega Dreamcast",
+        "igdb_id": 23,
+        "tgdb_id": 16,
+        "ra_id": 40,
+        "redump": True,
+        "tosec": True,
+    },
+    UPS.GAMEGEAR: {
+        "name": "Sega Game Gear",
+        "igdb_id": 35,
+        "tgdb_id": 20,
+        "ra_id": 15,
+        "nointro": True,
+        "tosec": True,
+    },
     UPS.SEGA_PICO: {"name": "Sega Pico", "igdb_id": 339, "nointro": True},
     # Sharp
     UPS.SHARP_X68000: {"name": "Sharp X68000", "igdb_id": 112, "ra_id": 52, "tosec": True},
@@ -711,12 +970,32 @@ HASHEOUS_PLATFORM_MAP: dict[UPS, dict[str, Any]] = {
     UPS.ZXS: {"name": "ZX Spectrum", "igdb_id": 26, "tgdb_id": 4913, "ra_id": 34, "tosec": True},
     UPS.ZX81: {"name": "ZX81", "igdb_id": 26, "tosec": True},
     # Sony PlayStation
-    UPS.PSX: {"name": "Sony PlayStation", "igdb_id": 7, "tgdb_id": 10, "ra_id": 12, "redump": True, "tosec": True},
-    UPS.PS2: {"name": "Sony PlayStation 2", "igdb_id": 8, "tgdb_id": 11, "ra_id": 21, "redump": True},
+    UPS.PSX: {
+        "name": "Sony PlayStation",
+        "igdb_id": 7,
+        "tgdb_id": 10,
+        "ra_id": 12,
+        "redump": True,
+        "tosec": True,
+    },
+    UPS.PS2: {
+        "name": "Sony PlayStation 2",
+        "igdb_id": 8,
+        "tgdb_id": 11,
+        "ra_id": 21,
+        "redump": True,
+    },
     UPS.PS3: {"name": "Sony PlayStation 3", "igdb_id": 9, "tgdb_id": 12, "redump": True},
     UPS.PS4: {"name": "Sony PlayStation 4", "igdb_id": 48},
     UPS.PS5: {"name": "Sony PlayStation 5", "igdb_id": 167},
-    UPS.PSP: {"name": "Sony PSP", "igdb_id": 38, "tgdb_id": 13, "ra_id": 41, "redump": True, "nointro": True},
+    UPS.PSP: {
+        "name": "Sony PSP",
+        "igdb_id": 38,
+        "tgdb_id": 13,
+        "ra_id": 41,
+        "redump": True,
+        "nointro": True,
+    },
     UPS.PSVITA: {"name": "Sony PlayStation Vita", "igdb_id": 46, "tgdb_id": 39, "nointro": True},
     UPS.POCKETSTATION: {"name": "PocketStation", "igdb_id": 76},
     # Vectrex

@@ -25,7 +25,9 @@ class TestGetFileExtension:
     def test_get_file_extension(self, test_id, test_case):
         """Test getting file extension."""
         result = get_file_extension(test_case["input"])
-        assert result == test_case["expected"], f"Test {test_id}: expected {test_case['expected']}, got {result}"
+        assert result == test_case["expected"], (
+            f"Test {test_id}: expected {test_case['expected']}, got {result}"
+        )
 
 
 class TestExtractTags:
@@ -45,7 +47,9 @@ class TestExtractTags:
             assert tag in result, f"Test {test_id}: expected tag '{tag}' not found in {result}"
 
         # Check count matches
-        assert len(result) == len(expected), f"Test {test_id}: expected {len(expected)} tags, got {len(result)}"
+        assert len(result) == len(expected), (
+            f"Test {test_id}: expected {len(expected)} tags, got {len(result)}"
+        )
 
 
 class TestExtractRegion:
@@ -107,7 +111,9 @@ class TestParseNoIntroFilename:
 
         # Check all expected tags are present
         for tag in expected["tags"]:
-            assert tag in result["tags"], f"Test {test_id}: expected tag '{tag}' not found in {result['tags']}"
+            assert tag in result["tags"], (
+                f"Test {test_id}: expected tag '{tag}' not found in {result['tags']}"
+            )
 
 
 class TestIsBiosFile:

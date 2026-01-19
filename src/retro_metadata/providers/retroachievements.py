@@ -173,7 +173,10 @@ class RetroAchievementsProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("RetroAchievements API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "RetroAchievements API response:\n%s",
+                    json.dumps(data, indent=2, ensure_ascii=False),
+                )
 
             return data
         except httpx.RequestError as e:
@@ -219,9 +222,7 @@ class RetroAchievementsProvider(MetadataProvider):
 
         # Filter by query
         query_lower = query.lower()
-        filtered = [
-            g for g in results if query_lower in g.get("Title", "").lower()
-        ][:limit]
+        filtered = [g for g in results if query_lower in g.get("Title", "").lower()][:limit]
 
         search_results = []
         for game in filtered:
@@ -379,9 +380,7 @@ class RetroAchievementsProvider(MetadataProvider):
         games_by_name = {g["Title"]: g for g in results if g.get("Title")}
 
         # Find best match
-        best_match, score = self.find_best_match(
-            search_term, list(games_by_name.keys())
-        )
+        best_match, score = self.find_best_match(search_term, list(games_by_name.keys()))
 
         if best_match and best_match in games_by_name:
             game = games_by_name[best_match]
@@ -480,10 +479,14 @@ class RetroAchievementsProvider(MetadataProvider):
 
         # Extract achievement statistics
         achievements_data = game.get("Achievements", {})
-        achievement_count = len(achievements_data) if achievements_data else game.get("NumAchievements", 0)
-        total_points = sum(
-            a.get("Points", 0) for a in achievements_data.values()
-        ) if isinstance(achievements_data, dict) else game.get("points_total", 0)
+        achievement_count = (
+            len(achievements_data) if achievements_data else game.get("NumAchievements", 0)
+        )
+        total_points = (
+            sum(a.get("Points", 0) for a in achievements_data.values())
+            if isinstance(achievements_data, dict)
+            else game.get("points_total", 0)
+        )
 
         return GameMetadata(
             first_release_date=first_release_date,

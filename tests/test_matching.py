@@ -27,11 +27,17 @@ class TestJaroWinklerSimilarity:
 
         # Handle different assertion types
         if "expected" in test_case:
-            assert result == test_case["expected"], f"Test {test_id}: expected {test_case['expected']}, got {result}"
+            assert result == test_case["expected"], (
+                f"Test {test_id}: expected {test_case['expected']}, got {result}"
+            )
         elif "expected_min" in test_case:
-            assert result >= test_case["expected_min"], f"Test {test_id}: expected >= {test_case['expected_min']}, got {result}"
+            assert result >= test_case["expected_min"], (
+                f"Test {test_id}: expected >= {test_case['expected_min']}, got {result}"
+            )
         elif "expected_max" in test_case:
-            assert result <= test_case["expected_max"], f"Test {test_id}: expected <= {test_case['expected_max']}, got {result}"
+            assert result <= test_case["expected_max"], (
+                f"Test {test_id}: expected <= {test_case['expected_max']}, got {result}"
+            )
 
 
 class TestFindBestMatch:

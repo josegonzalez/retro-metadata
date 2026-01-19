@@ -117,9 +117,7 @@ class RedisCache(CacheBackend):
         """
         cursor = 0
         while True:
-            cursor, keys = await self._client.scan(
-                cursor, match=f"{self._prefix}*", count=100
-            )
+            cursor, keys = await self._client.scan(cursor, match=f"{self._prefix}*", count=100)
             if keys:
                 await self._client.delete(*keys)
             if cursor == 0:

@@ -108,7 +108,9 @@ class FlashpointProvider(MetadataProvider):
 
             # Log full response body only when debug logging is enabled
             if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Flashpoint API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False))
+                logger.debug(
+                    "Flashpoint API response:\n%s", json.dumps(data, indent=2, ensure_ascii=False)
+                )
 
             return data
         except httpx.RequestError as e:
@@ -250,9 +252,7 @@ class FlashpointProvider(MetadataProvider):
 
         # Find best match
         games_by_name = {g["title"]: g for g in result if g.get("title")}
-        best_match, score = self.find_best_match(
-            search_term, list(games_by_name.keys())
-        )
+        best_match, score = self.find_best_match(search_term, list(games_by_name.keys()))
 
         if best_match and best_match in games_by_name:
             game = games_by_name[best_match]
