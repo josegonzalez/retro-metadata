@@ -407,8 +407,8 @@ retro-metadata-web             # Web server
 
 ```bash
 # Python tests
-poetry install
-poetry run pytest tests/ -v
+uv sync --extra dev
+uv run pytest tests/ -v
 
 # Go tests
 go test ./... -v
